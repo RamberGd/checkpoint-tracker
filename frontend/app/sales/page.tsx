@@ -67,7 +67,7 @@ export default function SalesPage() {
         </div>
 
         {/* Column headers */}
-        <div className={styles.colRow} role="row" aria-label="Column headers">
+        <div className={styles.colRow} aria-hidden="true">
           <span className={styles.colCell}>#</span>
           <span className={styles.colCell}>Title</span>
           <span className={styles.colCell}>Store</span>
@@ -76,35 +76,34 @@ export default function SalesPage() {
         </div>
 
         {/* Deal rows */}
-        <div
+        <ul
           key={scanKey}
           className={styles.dealList}
-          role="list"
           aria-label="Games on sale"
+          style={{ listStyle: "none", padding: 0, margin: 0 }}
         >
           {deals.map((deal, i) => (
-            <a
-              key={deal.id}
-              className={styles.dealRow}
-              href={deal.url || undefined}
-              target="_blank"
-              rel="noopener noreferrer"
-              role="listitem"
-              aria-label={`${deal.title} — ${deal.discount}% off on ${deal.store}`}
-              style={{ "--i": i } as React.CSSProperties}
-            >
-              <span className={styles.cellIndex}>
-                {String(i + 1).padStart(3, "0")}
-              </span>
-              <span className={styles.cellTitle}>{deal.title}</span>
-              <span className={styles.cellStore}>{deal.store}</span>
-              <span className={styles.cellDiscount}>−{deal.discount}%</span>
-              <span className={styles.cellPrice}>
-                ${deal.salePrice.toFixed(2)}
-              </span>
-            </a>
+            <li key={deal.id} style={{ "--i": i } as React.CSSProperties}>
+              <a
+                className={styles.dealRow}
+                href={deal.url || undefined}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${deal.title} — ${deal.discount}% off on ${deal.store}`}
+              >
+                <span className={styles.cellIndex}>
+                  {String(i + 1).padStart(3, "0")}
+                </span>
+                <span className={styles.cellTitle}>{deal.title}</span>
+                <span className={styles.cellStore}>{deal.store}</span>
+                <span className={styles.cellDiscount}>−{deal.discount}%</span>
+                <span className={styles.cellPrice}>
+                  ${deal.salePrice.toFixed(2)}
+                </span>
+              </a>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     </div>
     </RequireAuth>
