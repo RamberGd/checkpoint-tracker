@@ -49,11 +49,6 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  cursor: none;
-}
-
-@media (pointer: coarse) {
-  *, *::before, *::after { cursor: auto; }
 }
 
 html {

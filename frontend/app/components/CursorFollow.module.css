@@ -1,4 +1,6 @@
-/* Both elements are fixed, pointer-events: none, centered via negative margin */
+/* ── CursorFollow — Crosshair dot + lagging ring ── */
+
+/* Shared base */
 .dot,
 .ring {
   position: fixed;
@@ -7,7 +9,6 @@
   pointer-events: none;
   z-index: 9999;
   opacity: 0;
-  transition: opacity 200ms ease;
   will-change: transform;
 }
 
@@ -16,18 +17,29 @@
   opacity: 1;
 }
 
-/* Crosshair dot — echoes the crop marks vocabulary */
+/* ── Dot ── */
 .dot {
   width: 12px;
   height: 12px;
   margin: -6px 0 0 -6px;
+  border-radius: 50%;
+  background: transparent;
+  transition:
+    background  150ms ease,
+    width       150ms ease,
+    height      150ms ease,
+    margin      150ms ease,
+    opacity     200ms ease;
 }
 
+/* Crosshair lines */
 .dot::before,
 .dot::after {
   content: "";
   position: absolute;
   background: var(--ink);
+  transition: transform 150ms ease, opacity 150ms ease;
+  transform-origin: center;
 }
 
 /* horizontal bar */
@@ -48,11 +60,76 @@
   transform: translateX(-50%);
 }
 
-/* Lagging ring */
+/* ── Dot: hover over interactive — crosshair collapses, amber fill appears ── */
+.dot.hover {
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  background: var(--accent);
+}
+
+.dot.hover::before {
+  transform: translateY(-50%) scaleX(0);
+  opacity: 0;
+}
+
+.dot.hover::after {
+  transform: translateX(-50%) scaleY(0);
+  opacity: 0;
+}
+
+/* ── Dot: press — Cinema Rose flash ── */
+.dot.press {
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  background: var(--primary);
+}
+
+.dot.press::before {
+  transform: translateY(-50%) scaleX(0);
+  opacity: 0;
+}
+
+.dot.press::after {
+  transform: translateX(-50%) scaleY(0);
+  opacity: 0;
+}
+
+/* ── Ring ── */
 .ring {
   width: 32px;
   height: 32px;
   margin: -16px 0 0 -16px;
   border-radius: 50%;
   border: 1px solid oklch(0.93 0.012 330 / 0.35);
+  transition:
+    width        250ms var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)),
+    height       250ms var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)),
+    margin       250ms var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)),
+    border-color 250ms ease,
+    border-width 250ms ease,
+    box-shadow   250ms ease,
+    opacity      200ms ease;
+}
+
+/* ── Ring: hover — expands with amber tint + Cinema Rose glow ── */
+.ring.hover {
+  width: 44px;
+  height: 44px;
+  margin: -22px 0 0 -22px;
+  border-color: oklch(0.75 0.150 68 / 0.55);
+  border-width: 1.5px;
+  box-shadow: 0 0 16px oklch(0.52 0.155 328 / 0.22);
+}
+
+/* ── Ring: press — snaps inward ── */
+.ring.press {
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border-color: oklch(0.52 0.155 328 / 0.65);
+  border-width: 1.5px;
+  box-shadow: none;
+  transition-duration: 80ms;
 }
