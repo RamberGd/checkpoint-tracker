@@ -22,6 +22,7 @@ const nextConfig: NextConfig = {
       // IGDB serves game covers from images.igdb.com (cover_url stored in the
       // backend Game cache is https://images.igdb.com/.../t_cover_big/...).
       { protocol: "https", hostname: "images.igdb.com" },
+      { protocol: "https", hostname: "res.cloudinary.com" },
     ],
   },
 

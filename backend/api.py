@@ -22,6 +22,8 @@ import datetime
 import os
 import uuid
 
+import cloudinary
+import cloudinary.uploader
 import requests
 from flask import Blueprint, jsonify, request, redirect, url_for, Response, current_app
 from werkzeug.utils import secure_filename
@@ -84,7 +86,11 @@ def _avatar_url(user: User):
     The frontend rewrites `/uploads/*` to Flask's static/uploads folder, so we
     hand back a relative path (or null to let the UI use its default avatar).
     """
-    return f"/uploads/{user.profile_pic}" if user.profile_pic else None
+    if not user.profile_pic:
+        return None
+    if user.profile_pic.startswith("http"):
+        return user.profile_pic
+    return f"/uploads/{user.profile_pic}"
 
 
 def _me_payload(user: User) -> dict:
@@ -245,9 +251,17 @@ def edit_profile():
         ext = os.path.splitext(safe_name)[1].lower()
         if ext not in (".jpg", ".jpeg", ".png", ".gif"):
             return jsonify({"error": "Invalid file type. Please upload an image file."}), 400
-        unique_name = f"{uuid.uuid4().hex}{ext}"
-        new_photo.save(os.path.join(package_dir, "static/uploads", unique_name))
-        current_user.profile_pic = unique_name
+        try:
+            result = cloudinary.uploader.upload(
+                new_photo,
+                public_id=uuid.uuid4().hex,
+                overwrite=True,
+                resource_type="image",
+            )
+            current_user.profile_pic = result["secure_url"]
+        except Exception:
+            current_app.logger.exception("Cloudinary upload failed")
+            return jsonify({"error": "Image upload failed. Please try again."}), 500
 
     try:
         db.session.commit()

@@ -17,6 +17,8 @@ import requests
 from backend.chatbot import generate_stream
 from backend.deals import get_deals
 from backend.api import api as api_blueprint
+import cloudinary
+import cloudinary.uploader
 
 app = Flask(__name__)
 package_dir = os.path.dirname(__file__)
@@ -26,14 +28,16 @@ os.makedirs(instance_dir, exist_ok=True)
 # (before importing this module) so tests bind to an in-memory DB at engine
 # creation time and can never touch the real instance/database.db. It also makes
 # the future move to Postgres a config change rather than a code change.
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
-    'DATABASE_URL', 'sqlite:///' + os.path.join(instance_dir, 'database.db'))
+_db_url = os.getenv('DATABASE_URL', 'sqlite:///' + os.path.join(instance_dir, 'database.db'))
+if _db_url.startswith('postgres://'):
+    _db_url = _db_url.replace('postgres://', 'postgresql://', 1)
+app.config['SQLALCHEMY_DATABASE_URI'] = _db_url
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 db.init_app(app)
 bcrypt = Bcrypt(app)
 login_manager.init_app(app)
-
+cloudinary.config(from_url=os.environ.get("CLOUDINARY_URL", ""))
 # JSON API consumed by the Next.js frontend (parallel to the HTML routes).
 # Registered as a blueprint under /api; see backend/api.py for the rationale.
 app.register_blueprint(api_blueprint)
@@ -570,9 +574,18 @@ def edit_profile():
             if ext not in ('.jpg', '.jpeg', '.png', '.gif'):
                 flash('Invalid file type. Please upload an image file.')
                 return render_template('edit_profile.html', user=current_user)
-            unique_name = f"{uuid.uuid4().hex}{ext}"
-            new_photo.save(os.path.join(package_dir, 'static/uploads', unique_name))
-            current_user.profile_pic = unique_name
+            try:
+                result = cloudinary.uploader.upload(
+                    new_photo,
+                    public_id=uuid.uuid4().hex,
+                    overwrite=True,
+                    resource_type="image",
+                )
+                current_user.profile_pic = result["secure_url"]
+            except Exception:
+                app.logger.exception("Cloudinary upload failed")
+                flash('Image upload failed. Please try again.')
+                return render_template('edit_profile.html', user=current_user)
         try:
             db.session.commit()
         except Exception:
