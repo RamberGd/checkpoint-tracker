@@ -1,52 +1,83 @@
-# Project Title
-// IMAGE OF THE REAL FRONTEND
-## Brief description of the project
-CheckPoint 
-## Frontend mockup
-*In progress*
-## Team members
-Challa Chandrahas
+# CheckPoint
 
-Beatricie Tanurcov
+> A game tracking platform - discover games, manage your library, track prices, and chat with an AI assistant.
 
-Maksim Ter-Avakian
+<!-- Add a screenshot or demo GIF here once deployed -->
+<!-- ![CheckPoint screenshot](docs/screenshot.png) -->
 
-Viktor Mihajlovksi Maslovarik
+**[Live Demo](#)** · **[Report a Bug](../../issues)**
 
-## Installation details
-1. Clone the repository in an empty directory
-2. Set up a virtual environment and install all required libraries listed in requirements.txt
-3. Make a new file titled .env inside the backend directory and make sure that it has the following contents:
+---
 
-    IGDB_CLIENT_ID=""
+## Features
 
-    IGDB_CLIENT_SECRET=""
+- **Library management** - track games as played, wishlisted, or favourited
+- **Game discovery** - search 200,000+ games via the IGDB database with fuzzy matching and infinite scroll
+- **Price tracking** - live prices from Steam, GOG, and Epic Games via IsThereAnyDeal
+- **Reviews & discussion** - rate and review games, reply to other users in threaded discussions
+- **AI chat** - real-time streaming chat assistant with live web search context, powered by Ollama
+- **User profiles** - customisable profile with avatar upload
 
-    OLLAMA_API_KEY=""
+---
 
-    SEARCH_API_KEY=""
+## Tech Stack
 
-    SECRET_KEY=""
+**Frontend**
+- [Next.js 15](https://nextjs.org) (App Router, TypeScript)
+- CSS Modules
 
-    ITAD_API_KEY=""
-4. Go to https://docs.ollama.com/cloud, generate an api key according to their instructions and place it in the quotation marks at OLLAMA_API_KEY
-5. Go to https://exa.ai/, generate an api key according to their instructions and place it in the quotation marks at SEARCH_API_KEY
-6. Generate you own sectret key for the database via any means and place it in the quotation marks at SECRET_KEY
-7. Go to https://isthereanydeal.com/apps/, generate an api key according to their instructions and place it in the quotation marks at ITAD_API_KEY
-8. Sign Up with [Twitch](https://dev.twitch.tv/console) for a free account
-9. Ensure you have Two Factor Authentication [enabled](https://www.twitch.tv/settings/security)
-10. Register your application in the [Twitch Developer Portal](https://dev.twitch.tv/console/apps/create)
-11. The OAuth Redirect URL field is not used by IGDB. Please add ’localhost’ to continue.
-12. The Client Type must be set to Confidential to generate Client Secrets
-13. [Manage](https://dev.twitch.tv/console/apps) your newly created application
-14. Generate a Client Secret by pressing \[New Secret\]
-15. Take note of the Client ID and Client Secret. Place them in their appropriate positions in the .env file
+**Backend**
+- [Flask](https://flask.palletsprojects.com) - REST API + session auth
+- [SQLAlchemy](https://www.sqlalchemy.org) 
+- [Flask-Login](https://flask-login.readthedocs.io) + [Flask-Bcrypt](https://flask-bcrypt.readthedocs.io) - authentication
+- [pytest](https://pytest.org) - backend test suite
 
-Installation is complete
+**External APIs**
+- [IGDB](https://www.igdb.com/api) - game data (via Twitch OAuth)
+- [IsThereAnyDeal](https://isthereanydeal.com/api) - price comparison
+- [Ollama Cloud](https://ollama.com) - AI chat (streaming SSE)
+- [Exa](https://exa.ai) - real-time web search for the AI assistant
 
-## Running the frontend
+---
 
-**Requirements:** Node.js 18+
+## Getting Started
+
+### Prerequisites
+
+- Python 3.12+
+- Node.js 18+
+
+### 1. Clone the repo
+
+```bash
+git clone https://github.com/RamberGd/checkpoint-tracker.git
+cd checkpoint-tracker
+```
+
+### 2. Backend setup
+
+```bash
+cd backend
+python -m venv .venv
+source .venv/bin/activate      # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+Create a `.env` file inside `backend/`:
+
+```bash
+cp .env.example .env
+```
+
+Fill in each value - see [API Keys](#api-keys) below.
+
+Run the backend:
+
+```bash
+flask --app __init__.py run --debug
+```
+
+### 3. Frontend setup
 
 ```bash
 cd frontend
@@ -56,58 +87,88 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+---
 
-## Running the backend
+## API Keys
 
-Complete the installation steps above first, then:
+| Variable | Where to get it |
+|---|---|
+| `IGDB_CLIENT_ID` | [Twitch Developer Portal](https://dev.twitch.tv/console) - register an app, set OAuth redirect to `localhost` |
+| `IGDB_CLIENT_SECRET` | Same app in Twitch portal - generate a Client Secret |
+| `ITAD_API_KEY` | [IsThereAnyDeal](https://isthereanydeal.com/apps/) - register for a free API key |
+| `OLLAMA_API_KEY` | [Ollama Cloud](https://ollama.com/cloud) - generate an API key |
+| `SEARCH_API_KEY` | [Exa](https://exa.ai) - sign up for a free API key |
+| `SECRET_KEY` | Generate locally: `python -c "import secrets; print(secrets.token_hex(32))"` |
+| `DATABASE_URL` | Leave blank for SQLite (default). Set to a PostgreSQL connection string for production. |
+| `CLOUDINARY_URL` | [Cloudinary](https://cloudinary.com) - free account, copy the URL from your dashboard |
+
+---
+
+## Project Structure
+
+```
+checkpoint-tracker/
+├── backend/
+│   ├── __init__.py           # Flask app, all HTML routes
+│   ├── api.py                # JSON API blueprint consumed by the Next.js frontend
+│   ├── models.py             # SQLAlchemy models (User, Game, Review, UserGames)
+│   ├── extensions.py         # Shared Flask extensions (db, login_manager)
+│   ├── auth.py               # WTForms login/signup definitions
+│   ├── igdb.py               # IGDB API client (Twitch OAuth + search)
+│   ├── igdb_caching.py       # IGDB cache layer - fetches from API, stores in DB
+│   ├── deals.py              # IsThereAnyDeal integration
+│   ├── chatbot.py            # Ollama streaming + Exa web search
+│   ├── .env.example          # Environment variable template
+│   ├── requirements.txt      # Python dependencies
+│   └── tests/                # pytest test suite (11 modules)
+└── frontend/
+    ├── app/                  # Next.js App Router pages
+    │   ├── page.tsx          # Landing page
+    │   ├── profile/          # User profile
+    │   ├── game/[id]/        # Game detail + reviews
+    │   ├── ai-chat/          # AI assistant
+    │   ├── sales/            # Price tracking
+    │   └── ...
+    ├── app/components/       # Shared UI components
+    └── next.config.ts        # Same-origin proxy to Flask backend
+```
+
+---
+
+## Architecture
+
+The frontend and backend run as separate services. Next.js proxies all `/api/*` requests to Flask at `BACKEND_ORIGIN`, keeping auth cookies same-origin so no CORS configuration is needed.
+
+```
+Browser → Vercel (Next.js) → /api/* → Render (Flask) → Neon (PostgreSQL)
+                                                       → IGDB / ITAD / Ollama
+```
+
+---
+
+## Running Tests
 
 ```bash
 cd backend
-flask --app __init__.py run --debug
+source .venv/bin/activate
+pytest tests/ -v
 ```
 
+---
 
-## Architecture
-```
-group-24/
-├── backend/
-│   ├── __init__.py           # App factory, all route definitions
-│   ├── models.py             # SQLAlchemy ORM models (User, Game, Review, ReplyToReview, UserGames)
-│   ├── extensions.py         # Shared Flask extension instances (db, login_manager)
-│   ├── auth.py               # WTForms login and signup form definitions
-│   ├── igdb.py               # IGDB API client (Twitch OAuth + game fetch)
-│   ├── igdb_caching.py       # IGDB cache layer — fetches from API, stores in DB
-│   ├── deals.py              # IsThereAnyDeal API integration
-│   ├── chatbot.py            # LLM streaming via Ollama (SSE)
-│   ├── comparison.py         # Price comparison utilities
-│   ├── game.py               # Game-related helpers
-│   ├── db_creator.py         # One-off script to initialise the database
-│   ├── templates/            # Jinja2 server-rendered HTML templates
-│   │   ├── base.html         # Shared layout with navbar
-│   │   ├── home.html
-│   │   ├── login.html / signup.html
-│   │   ├── dashboard.html
-│   │   ├── profile.html / edit_profile.html
-│   │   ├── game.html / discussion.html
-│   │   ├── sales.html / chat.html
-│   │   └── wishlist.html / played.html / favorites.html
-│   ├── static/
-│   │   ├── images/           # Static assets (e.g. fallback avatar)
-│   │   └── uploads/          # User-uploaded profile pictures
-│   ├── instance/             # SQLite database file (git-ignored)
-│   └── tests/
-│       ├── conftest.py       # Shared fixtures (client, test_user, mocks)
-│       ├── test_db.py        # Model constraint tests
-│       ├── test_profile.py   # Profile and edit profile route tests
-│       ├── test_delete_review.py  # Review and reply deletion tests
-│       ├── test_igdb_api.py  # IGDB client unit tests
-│       ├── test_game.py      # Game page tests
-│       ├── test_searchbar.py # Search functionality tests
-│       ├── test_auth.py      # Auth route tests
-│       ├── test_deals.py     # Deals/sales tests
-│       ├── test_chatbot.py   # Chatbot tests
-│       └── test_comparison.py
-├── frontend/                 # Frontend assets (in progress)
-├── requirements.txt          # Python dependencies
-└── README.md
-```
+## Contributors
+
+This project was built as part of a university course.
+
+| Name               | Contribution                                                                                                           |
+|--------------------|------------------------------------------------------------------------------------------------------------------------|
+| **M. Ter-Avakian** | Frontend, design system, IGDB game data fetching and caching, SQLAlchemy models, profile management, tests             |
+| **B.**             | User authentication, game lists (played/wishlist/favourites), reviews and replies, SQLAlchemy models, tests            |
+| **V.**             | IDGB API search, chatbot via Ollama API with search integration via Exa API, tests                                     |
+| **R.**             | Sales page with deals sourced from ITAD API, ITAD price fetching, game title matching between IGDB and ITAD, tests |
+
+---
+
+## License
+
+<!-- Add if applicable: MIT / Apache 2.0 / or remove this section -->
