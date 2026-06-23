@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
@@ -68,6 +68,8 @@ export default function GamePage() {
   const [reviewText, setReviewText] = useState("");
   const [submitState, setSubmitState] = useState<"idle" | "posted">("idle");
   const [reviewError, setReviewError] = useState<string | null>(null);
+  const [confirmingDelete, setConfirmingDelete] = useState<number | null>(null);
+  const deleteTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Load game detail + prices on mount. Prices are fetched separately because
   // the ITAD round-trip is slower and must not block the game page rendering.
@@ -169,6 +171,14 @@ export default function GamePage() {
   }
 
   async function deleteReview(id: number) {
+    if (confirmingDelete !== id) {
+      setConfirmingDelete(id);
+      if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current);
+      deleteTimerRef.current = setTimeout(() => setConfirmingDelete(null), 2500);
+      return;
+    }
+    if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current);
+    setConfirmingDelete(null);
     try {
       await api.deleteReview(id);
       setReviews((prev) => prev.filter((r) => r.id !== id));
@@ -341,20 +351,20 @@ export default function GamePage() {
               </span>
             </div>
 
-            <div className={styles.reviewsList} role="list">
+            <div className={styles.reviewsList}>
               {reviews.map((r, i) => (
                 <Reveal key={r.id} delay={i * 75}>
-                  <article className={styles.reviewItem} role="listitem">
+                  <article className={styles.reviewItem}>
                     <div className={styles.reviewLeft}>
                       <span className={styles.reviewerName}>{r.username}</span>
                       <span className={styles.reviewRating}>{toRoman(r.rating)}&thinsp;/&thinsp;V</span>
                       {r.isOwn && (
                         <button
-                          className={styles.deleteBtn}
+                          className={`${styles.deleteBtn}${confirmingDelete === r.id ? ` ${styles.deleteBtnConfirm}` : ""}`}
                           onClick={() => deleteReview(r.id)}
-                          aria-label="Delete your review"
+                          aria-label={confirmingDelete === r.id ? "Confirm delete your review" : "Delete your review"}
                         >
-                          Delete
+                          {confirmingDelete === r.id ? "Confirm?" : "Delete"}
                         </button>
                       )}
                     </div>

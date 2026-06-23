@@ -168,7 +168,7 @@
 .gameTitle {
   font-family: var(--font-display);
   font-weight: 900;
-  font-size: var(--type-display);
+  font-size: var(--type-page-title);
   line-height: 0.88;
   letter-spacing: -0.02em;
   color: var(--ink);
@@ -479,7 +479,7 @@
   display: inline-block;
   font-family: var(--font-mono);
   font-size: calc(var(--type-caption) * 0.88);
-  color: oklch(0.40 0.010 330);
+  color: oklch(0.58 0.015 330);
   text-transform: uppercase;
   letter-spacing: 0.10em;
   background: none;
@@ -491,7 +491,8 @@
   transition: color 180ms ease;
 }
 
-.deleteBtn:hover {
+.deleteBtn:hover,
+.deleteBtnConfirm {
   color: oklch(0.65 0.18 25);
 }
 
@@ -511,7 +512,7 @@
   font-family: var(--font-body);
   font-style: italic;
   font-size: clamp(0.9rem, 1.2vw, 1.05rem);
-  color: var(--muted);
+  color: oklch(0.72 0.012 330);
   line-height: 1.72;
   max-width: 62ch;
   text-wrap: pretty;
@@ -666,7 +667,7 @@
 .formError {
   font-family: var(--font-mono);
   font-size: var(--type-caption);
-  color: var(--accent);
+  color: oklch(0.65 0.18 25);
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -804,7 +805,7 @@
 .shopUnavailable {
   font-family: var(--font-mono);
   font-size: var(--type-caption);
-  color: var(--rule);
+  color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.12em;
 }
