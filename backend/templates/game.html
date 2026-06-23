@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+
+    <h1>Game</h1>
+
+    <img src=" {{game.cover_url}}" alt="game.title" width="200">
+    <h3>{{game.title}}</h3>
+
+    <form method="POST" action="{{ url_for('add_to_favorite', game_id=game.igdb_id) }}">
+        {% if is_favorite %}
+            <button type="submit">Remove from favorites</button>
+        {% else %}
+            <button type="submit">Add to favorites</button>
+        {% endif %}
+    </form>
+
+    <form method="POST" action="{{ url_for('add_to_wishlist', game_id=game.igdb_id) }}">
+        {% if is_in_wishlist %}
+            <button type="submit">Remove from wishlist</button>
+        {% else %}
+             <button type="submit">Add to wishlist</button>
+        {% endif %}
+    </form>
+
+    <form method="POST" action="{{ url_for('mark_as_played', game_id=game.igdb_id) }}">
+        {% if is_played %}
+            <button type="submit">Remove from Played</button>
+        {% else %}
+             <button type="submit">Mark as Played</button>
+        {% endif %}
+    </form>
+
+    <h2> About {{game.title}}</h2>
+    <p>{{game.summary}}</p>
+
+    <h3>Genre</h3>
+    <p1>{{ game.genres | join('') | replace(',', ' | ') }}</p1>
+
+    <h3>Release Date</h3>
+    <p1>{{game.release_date}}</p1>
+    <br>
+    <br>
+
+
+    {% if avg_rating is not none %}
+        <p>Average Rating: {{ '%0.1f' | format(avg_rating|float)}}/5</p>
+    {% else %}
+        <p>No ratings yet.</p>
+    {% endif %}
+
+
+    <h2>Reviews</h2>
+
+    {% for review in reviews %}
+        <h2>{{ review.user.username }}</h2>
+        <p>Rating: {{ review.rating }}/5</p>
+        <p>{{ review.comment }}</p>
+        {% if review.user_id == current_user.id %}
+            <form method="POST" action="{{ url_for('delete_review', review_id=review.id) }}">
+                <button type="submit">Delete</button>
+            </form>
+        {% endif %}
+        <a href="{{url_for('discussion', review_id = review.id)}}">Reply({{ review.replies|length }})</a>
+    {% else %}
+    <p>No reviews yet.</p>
+
+    {% endfor %}
+
+    <form method = "POST">
+        <h2>Rate</h2>
+        <select name = "rating">
+            <option value = 1> 1 </option>
+            <option value = 2> 2 </option>
+            <option value = 3> 3 </option>
+            <option value = 4> 4 </option>
+            <option value = 5> 5 </option>
+        </select>
+
+        <h2>Leave a Comment</h2>
+        <textarea
+                rows = "5"
+                cols = "50"
+                name = "comment"
+                placeholder = "Leave a review">
+        </textarea>
+        <br>
+
+        <button type="submit">Post Review</button>
+    </form>
+
+    {% for message in get_flashed_messages() %}
+        <p>{{ message }}</p>
+    {% endfor %}
+
+<!--This little bit of code here will use the ITAD api to also fetch prices from steam, gog and epic, 
+but I desperately need the IGDB credentials for it to work-->
+    <h2>Price Comparison</h2>
+    {% if deals %}
+        {% for deal in deals %}
+            <p>
+                <a href="{{ deal.url }}">{{ deal.shop.name }}</a>: 
+                ${{ deal.price.amount }} 
+                ({{ deal.cut }}% off)
+            </p>
+        {% endfor %}
+    {% else %}
+        <p>No deals found for this game.</p>
+    {% endif %}
+
+
+     <a href="{{url_for('profile')}}">Back to Home page</a>
+
+
+
+
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "navbar.html" %}
+{% block title %}Dashboard - CheckPoint{% endblock %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Welcome to your Dashboard</h1>
+        <h2>Library</h2>
+
+
+    <a href="{{url_for('wishlist')}}">PRESS HERE TO SEE YOUR WISHLIST</a><br><br>
+    <a href="{{url_for('played')}}">PRESS HERE TO SEE YOUR PLAYED GAMES</a><br><br>
+    <a href="{{url_for('favorites')}}">PRESS HERE TO SEE YOUR FAVORITES</a><br><br>
+    <a href="{{url_for('sales')}}">PRESS HERE TO SEE GAMES ON SALE</a><br><br>
+    <a href="{{url_for('logout')}}">PRESS HERE TO LOGOUT</a><br><br>
+
+</body>
+</html>
+{% endblock %}

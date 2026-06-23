@@ -1,0 +1,891 @@
+/* ─────────────────────────────────────────
+   CheckPoint — Game Detail Page
+   ───────────────────────────────────────── */
+
+/* ── Page shell ── */
+.page {
+  position: relative;
+  min-height: 100svh;
+  background: var(--bg);
+}
+
+/* ── Nav (mirrors profile) ── */
+.nav {
+  position: fixed;
+  top: 0;
+  inset-inline: 0;
+  z-index: var(--z-nav);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: clamp(0.65rem, 1.1vw, 0.9rem);
+  padding-inline: clamp(1rem, 3vw, 2.5rem);
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.nav::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  bottom: -2.5rem;
+  background: linear-gradient(to bottom, var(--bg) 40%, transparent 100%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.navMeta,
+.navAuth {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+}
+
+.navSep {
+  opacity: 0.35;
+  user-select: none;
+}
+
+.navLink {
+  transition: color 180ms ease;
+}
+
+.navLink:hover {
+  color: var(--ink);
+}
+
+.navLink:focus-visible {
+  outline: 2px solid var(--muted);
+  outline-offset: 3px;
+}
+
+/* ── Hero ── */
+.hero {
+  display: grid;
+  grid-template-columns: min(36vw, 400px) 1fr;
+  gap: clamp(2.5rem, 5vw, 6rem);
+  align-items: start;
+  padding-top: clamp(7rem, 12vw, 9.5rem);
+  padding-bottom: clamp(3.5rem, 5.5vw, 5.5rem);
+  padding-inline: var(--gutter);
+  border-bottom: 1px solid var(--rule);
+}
+
+/* ── Cover column ── */
+.coverCol {
+  /* Reveal wraps this — just let the child define the visual */
+}
+
+.coverWrap {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  isolation: isolate;
+}
+
+.cover {
+  filter: grayscale(60%) contrast(1.15);
+  transition: filter 0.65s var(--ease-out-expo);
+}
+
+.coverWrap:hover .cover {
+  filter: grayscale(12%) contrast(1.06);
+}
+
+.coverOverlay {
+  position: absolute;
+  inset: 0;
+  background: var(--primary);
+  mix-blend-mode: color;
+  opacity: 0.38;
+  pointer-events: none;
+  transition: opacity 0.65s var(--ease-out-expo);
+}
+
+.coverWrap:hover .coverOverlay {
+  opacity: 0.10;
+}
+
+/* ── Hero info column ── */
+.heroInfo {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 1.6vw, 1.4rem);
+  padding-top: clamp(0.5rem, 1.5vw, 1.25rem);
+}
+
+.kicker {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+
+.saleBadge {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: oklch(0.10 0 0);
+  background: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  padding: 0.28em 0.7em 0.22em;
+  line-height: 1;
+  margin-top: 0.35em;
+  animation: salePulse 2.8s ease-in-out infinite;
+}
+
+@keyframes salePulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.65; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .saleBadge {
+    animation: none;
+  }
+}
+
+.titleRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.titleRow > .gameTitle {
+  flex: 1;
+  min-width: 0;
+}
+
+.titleRow > .saleBadge {
+  flex-shrink: 0;
+}
+
+.gameTitle {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--type-display);
+  line-height: 0.88;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-transform: uppercase;
+  text-wrap: balance;
+  text-shadow:
+    3px 3px 0 oklch(0.52 0.155 328 / 0.55),
+    -1px -1px 0 oklch(0.75 0.150 68 / 0.30);
+}
+
+.divider {
+  height: 1px;
+  background: var(--rule);
+  flex-shrink: 0;
+}
+
+/* ── Genre row ── */
+.genreRow {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+}
+
+.genreGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.genreTag {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--ink);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.genrePipe {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--rule);
+  user-select: none;
+}
+
+/* ── Release meta ── */
+.releaseMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.releaseLabel {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.releaseDash {
+  color: var(--rule);
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  user-select: none;
+}
+
+.releaseDate {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--ink);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+/* ── Rating display ── */
+.ratingDisplay {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.ratingDisplay:hover .ratingCount {
+  color: var(--ink);
+}
+
+.ratingDisplay:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.ratingBarGroup {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.ratingNumeral {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+
+.ratingBar {
+  display: inline-block;
+  position: relative;
+  width: 5rem;
+  height: 1px;
+  background: var(--rule);
+}
+
+.ratingBar::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  width: var(--rating-pct, 0%);
+  background: var(--accent);
+}
+
+.ratingValue {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.ratingCount {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--muted);
+  letter-spacing: 0.08em;
+}
+
+/* ── Action buttons ── */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.actionBtn {
+  display: block;
+  width: 100%;
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  border: 1px solid oklch(0.75 0.150 68 / 0.45);
+  padding: 0.8em 1.4em;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  transition:
+    background 220ms ease,
+    color 220ms ease,
+    border-color 220ms ease;
+}
+
+.actionBtn:hover {
+  border-color: var(--accent);
+  background: oklch(0.75 0.150 68 / 0.08);
+}
+
+.actionBtn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.actionBtnActive {
+  background: var(--accent);
+  color: oklch(0.10 0 0);
+  border-color: var(--accent);
+}
+
+.actionBtnActive:hover {
+  background: oklch(0.70 0.145 68);
+  border-color: oklch(0.70 0.145 68);
+  color: oklch(0.10 0 0);
+}
+
+/* ── Summary ── */
+.summarySection {
+  background: var(--surface);
+  border-bottom: 1px solid var(--rule);
+}
+
+.summaryInner {
+  padding-block: clamp(3rem, 5.5vw, 5rem);
+  padding-inline: var(--gutter);
+  max-width: calc(var(--narrow) + 2 * var(--gutter));
+}
+
+.summaryLabel {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--type-section-head);
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-transform: uppercase;
+  margin-bottom: clamp(1rem, 1.6vw, 1.25rem);
+}
+
+.summaryRule {
+  height: 1px;
+  background: var(--rule);
+  margin-bottom: clamp(1.5rem, 2.5vw, 2.25rem);
+}
+
+.summaryText {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  line-height: 1.78;
+  color: var(--ink);
+  max-width: 68ch;
+  text-wrap: pretty;
+}
+
+/* ── Reviews section ── */
+.reviewsSection {
+  background: var(--surface);
+  border-bottom: 1px solid var(--rule);
+}
+
+.reviewsInner {
+  padding-inline: var(--gutter);
+  padding-bottom: clamp(4rem, 7vw, 7rem);
+}
+
+.reviewsHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: clamp(2.75rem, 4.5vw, 4rem);
+  margin-bottom: 0;
+}
+
+.reviewsTitle {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--type-section-head);
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-transform: uppercase;
+}
+
+.reviewsCount {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--type-section-head);
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  color: var(--rule);
+}
+
+/* ── Review items ── */
+.reviewsList {
+  display: flex;
+  flex-direction: column;
+}
+
+.reviewItem {
+  display: grid;
+  grid-template-columns: clamp(9rem, 14vw, 14rem) 1fr;
+  gap: clamp(1.5rem, 3vw, 3rem);
+  align-items: start;
+  padding-block: clamp(2rem, 3.5vw, 2.75rem);
+  border-top: 1px solid var(--rule);
+}
+
+.reviewLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding-top: 0.1em;
+}
+
+.reviewerName {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(0.95rem, 1.4vw, 1.25rem);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-transform: uppercase;
+  line-height: 0.95;
+  word-break: break-all;
+}
+
+.reviewRating {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.deleteBtn {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: calc(var(--type-caption) * 0.88);
+  color: oklch(0.40 0.010 330);
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  margin-top: 0.35rem;
+  text-align: left;
+  transition: color 180ms ease;
+}
+
+.deleteBtn:hover {
+  color: oklch(0.65 0.18 25);
+}
+
+.deleteBtn:focus-visible {
+  outline: 2px solid oklch(0.65 0.18 25 / 0.5);
+  outline-offset: 3px;
+}
+
+.reviewRight {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.75rem, 1.2vw, 1rem);
+  padding-top: 0.1em;
+}
+
+.reviewComment {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: clamp(0.9rem, 1.2vw, 1.05rem);
+  color: var(--muted);
+  line-height: 1.72;
+  max-width: 62ch;
+  text-wrap: pretty;
+}
+
+.reviewFooter {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.replyLink {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 0.08em;
+  transition: color 200ms ease, border-bottom-color 200ms ease;
+}
+
+.replyLink:hover {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
+
+.replyLink:focus-visible {
+  outline: 2px solid var(--muted);
+  outline-offset: 3px;
+}
+
+/* ── Write review form ── */
+.writeForm {
+  margin-top: clamp(3rem, 5vw, 5rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.1rem, 1.8vw, 1.5rem);
+  max-width: 680px;
+}
+
+.writeLabel {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--type-section-head);
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-transform: uppercase;
+}
+
+.writeRule {
+  height: 1px;
+  background: var(--rule);
+  margin-top: -0.25rem;
+}
+
+.formHelper {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: clamp(0.85rem, 1.2vw, 0.95rem);
+  color: var(--muted);
+  line-height: 1.65;
+  margin-top: -0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.ratingPickerRow {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.ratingPickerLabel {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  flex-shrink: 0;
+}
+
+.ratingPicker {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.ratingBtn {
+  width: 2.4rem;
+  height: 2.4rem;
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--muted);
+  border: 1px solid var(--rule);
+  background: transparent;
+  cursor: pointer;
+  letter-spacing: 0.08em;
+  transition:
+    border-color 180ms ease,
+    color 180ms ease,
+    background 180ms ease;
+}
+
+.ratingBtn:hover {
+  border-color: oklch(0.75 0.150 68 / 0.6);
+  color: var(--accent);
+}
+
+.ratingBtn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.ratingBtnActive {
+  background: transparent;
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.ratingBtnActive:hover {
+  background: transparent;
+  color: var(--accent);
+}
+
+.textarea {
+  width: 100%;
+  background: oklch(0.09 0.004 330);
+  border: 1px solid var(--rule);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: clamp(0.9rem, 1.2vw, 1rem);
+  line-height: 1.7;
+  padding: 1rem 1.25rem;
+  resize: vertical;
+  min-height: 8rem;
+  transition: border-color 200ms ease;
+}
+
+.textarea::placeholder {
+  color: var(--muted);
+  opacity: 0.65;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: oklch(0.75 0.150 68 / 0.65);
+}
+
+/* Inline review-submit error (e.g. "You have already reviewed this game"). */
+.formError {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.submitBtn {
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 0.8em 2rem;
+  background: transparent;
+  cursor: pointer;
+  transition:
+    background 220ms ease,
+    color 220ms ease;
+}
+
+.submitBtn:hover:not(:disabled) {
+  background: var(--accent);
+  color: oklch(0.10 0 0);
+}
+
+.submitBtn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.submitBtn:disabled {
+  color: var(--muted);
+  border-color: var(--rule);
+  cursor: not-allowed;
+}
+
+/* ── Price section ── */
+.priceSection {
+  background: var(--bg);
+  border-top: 1px solid var(--rule);
+}
+
+.priceInner {
+  padding-block: clamp(3rem, 5vw, 5rem);
+  padding-inline: var(--gutter);
+}
+
+.priceTitle {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--type-section-head);
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-transform: uppercase;
+  margin-bottom: clamp(1rem, 1.6vw, 1.25rem);
+}
+
+.priceRule {
+  height: 1px;
+  background: var(--rule);
+  margin-bottom: clamp(2rem, 3.5vw, 3rem);
+}
+
+.priceGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+}
+
+.priceShop {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding-inline: clamp(1.25rem, 2.5vw, 2.5rem);
+  border-left: 1px solid var(--rule);
+}
+
+.priceShop:first-child {
+  padding-inline-start: 0;
+  border-left: none;
+}
+
+.shopName {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+
+.shopPriceRow {
+  display: flex;
+  align-items: baseline;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.shopPrice {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(1.5rem, 2.8vw, 2.2rem);
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  line-height: 1;
+  text-decoration: none;
+  transition: color 180ms ease;
+}
+
+.shopPrice:hover {
+  color: var(--accent);
+}
+
+.shopPrice:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.shopDeal {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.shopOriginal {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--muted);
+  text-decoration: line-through;
+  letter-spacing: 0.08em;
+}
+
+.shopUnavailable {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--rule);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: 1fr;
+    gap: clamp(1.75rem, 4vw, 2.5rem);
+  }
+
+  .coverCol {
+    max-width: min(55vw, 280px);
+  }
+
+  .heroInfo {
+    padding-top: 0;
+  }
+}
+
+@media (max-width: 680px) {
+  .reviewItem {
+    grid-template-columns: 1fr;
+    gap: clamp(0.75rem, 2vw, 1rem);
+  }
+
+  .reviewLeft {
+    flex-direction: row;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.6rem 1rem;
+  }
+
+  .deleteBtn {
+    margin-top: 0;
+  }
+
+  .priceGrid {
+    grid-template-columns: 1fr;
+    gap: clamp(1.75rem, 3vw, 2.25rem);
+  }
+
+  .priceShop {
+    padding-inline: 0;
+    border-left: none;
+    border-top: 1px solid var(--rule);
+    padding-top: clamp(1.5rem, 3vw, 2rem);
+  }
+
+  .priceShop:first-child {
+    border-top: none;
+    padding-top: 0;
+  }
+
+  .navAuth {
+    display: none;
+  }
+}
+
+@media (max-width: 440px) {
+  .coverCol {
+    max-width: min(65vw, 220px);
+  }
+
+  .actions {
+    gap: 0.4rem;
+  }
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .cover,
+  .coverOverlay,
+  .navLink,
+  .actionBtn,
+  .replyLink,
+  .deleteBtn,
+  .shopPrice,
+  .ratingBtn,
+  .textarea,
+  .submitBtn {
+    transition: none !important;
+  }
+}

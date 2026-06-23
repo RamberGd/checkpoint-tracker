@@ -1,0 +1,382 @@
+/* ── Page shell ── */
+.page {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+
+/* ── Nav ── */
+.nav {
+  position: fixed;
+  top: 0;
+  inset-inline: 0;
+  z-index: var(--z-nav);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: clamp(0.65rem, 1.1vw, 0.9rem);
+  padding-inline: clamp(1rem, 3vw, 2.5rem);
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+.nav::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  bottom: -2.5rem;
+  background: linear-gradient(to bottom, var(--bg) 40%, transparent 100%);
+  z-index: -1;
+  pointer-events: none;
+}
+.navMeta,
+.navAuth {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+}
+.navSep {
+  opacity: 0.35;
+  user-select: none;
+}
+.navLink {
+  transition: color 180ms ease;
+}
+.navLink:hover {
+  color: var(--ink);
+}
+.navLinkActive {
+  color: var(--accent);
+}
+.navLinkActive:hover {
+  color: var(--accent);
+}
+
+/* ── Oracle zone ── */
+.oracle {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 5rem;
+  padding-bottom: 7rem;
+  padding-inline: var(--gutter);
+  touch-action: pan-y;
+}
+.oracleInner {
+  max-width: 65ch;
+  width: 100%;
+}
+.oracleLabel {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+.oracleLabelPulse {
+  animation: oracle-breathe 1.4s ease-in-out infinite;
+}
+.oracleRule {
+  height: 1px;
+  background: var(--accent);
+  margin-block: 0.5rem 1.5rem;
+  opacity: 0.6;
+}
+
+/* Idle state */
+.idlePrompt {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: var(--type-body);
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.75;
+  animation: oracle-fade-up 280ms 80ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Thinking state */
+.thinkingQuery {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  line-height: 1.6;
+  animation: oracle-fade-up 140ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Response */
+.responseText {
+  font-family: var(--font-body);
+  font-size: var(--type-body);
+  color: var(--ink);
+  text-align: justify;
+  line-height: 1.75;
+}
+.responseEnter {
+  animation: oracle-resolve 300ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ── Markdown content inside response ── */
+.responseText p { margin: 0 0 0.75em; }
+.responseText p:last-child { margin-bottom: 0; }
+
+.responseText strong { font-weight: 800; color: var(--ink); }
+.responseText em     { font-style: italic; }
+
+.responseText h1,
+.responseText h2,
+.responseText h3 {
+  font-family: var(--font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin: 1.1em 0 0.4em;
+  line-height: 1.1;
+}
+.responseText h1 { font-size: var(--type-subhead); }
+.responseText h2 { font-size: clamp(1.1rem, 2vw, 1.5rem); }
+.responseText h3 { font-size: var(--type-body); }
+
+.responseText ul,
+.responseText ol {
+  padding-left: 1.4em;
+  margin: 0.5em 0 0.75em;
+}
+.responseText li { margin-bottom: 0.25em; }
+
+.responseText code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  background: oklch(0.14 0.006 330);
+  color: var(--accent);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+}
+.responseText pre {
+  background: oklch(0.11 0.006 330);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 0.85em 1em;
+  overflow-x: auto;
+  margin: 0.75em 0;
+}
+.responseText pre code {
+  background: none;
+  padding: 0;
+  color: var(--ink);
+  font-size: var(--type-caption);
+}
+
+.responseText table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.75em 0;
+  font-size: var(--type-caption);
+  font-family: var(--font-mono);
+}
+.responseText th,
+.responseText td {
+  text-align: left;
+  padding: 0.35em 0.75em;
+  border-bottom: 1px solid var(--rule);
+}
+.responseText th {
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-bottom-color: oklch(0.28 0.006 330);
+}
+
+.responseText blockquote {
+  border-left: 2px solid var(--accent);
+  margin: 0.75em 0;
+  padding-left: 1em;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.responseText a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Streaming cursor */
+.streamCursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: var(--accent);
+  vertical-align: text-bottom;
+  margin-left: 3px;
+  animation: cursor-blink 0.7s steps(2) infinite;
+}
+
+/* Error */
+.errorText {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: var(--type-body);
+  color: var(--primary);
+  text-align: center;
+  line-height: 1.75;
+}
+
+/* ── Oracle clickable state ── */
+.oracleClickable {
+  cursor: text;
+}
+
+
+/* ── Film slate input ── */
+.slate {
+  position: fixed;
+  bottom: 0;
+  inset-inline: 0;
+  background: var(--surface);
+  border-top: 1px solid var(--rule);
+  padding: 1rem clamp(1rem, 3vw, 2.5rem);
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+}
+.slate:focus-within {
+  border-top-color: var(--accent);
+  animation: slate-focus-flash 900ms ease-out both;
+}
+.slateHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 0.4rem;
+}
+.slateReturn {
+  color: var(--accent);
+}
+.slateRule {
+  height: 1px;
+  background: var(--accent);
+  opacity: 0.5;
+  margin-bottom: 0.6rem;
+}
+.slateInput {
+  display: block;
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--type-body);
+  line-height: 1.5;
+  resize: none;
+  caret-color: var(--accent);
+  overflow: hidden;
+}
+.slateInput::placeholder {
+  color: var(--muted);
+}
+.slateInput:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── Label row (label + frame counter) ── */
+.oracleLabelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.frameCounter {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--muted);
+  letter-spacing: 0.12em;
+  opacity: 0.6;
+}
+
+/* ── Animated content wrapper ── */
+.oracleContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+.oracleEnterBack {
+  animation: frame-enter-back 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.oracleEnterForward {
+  animation: frame-enter-forward 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ── Keyframes ── */
+
+/* darkroom develop: invisible → ghost → sharp */
+@keyframes oracle-resolve {
+  0%   { filter: blur(8px); opacity: 0;    }
+  30%  { filter: blur(8px); opacity: 0.22; }
+  100% { filter: blur(0);   opacity: 1;    }
+}
+/* snap-up for thinking/idle entrances */
+@keyframes oracle-fade-up {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+@keyframes oracle-breathe {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
+@keyframes frame-enter-back {
+  from { transform: translateY(10px); opacity: 0; filter: blur(3px); }
+  to   { transform: translateY(0);    opacity: 1; filter: blur(0); }
+}
+@keyframes frame-enter-forward {
+  from { transform: translateY(-10px); opacity: 0; filter: blur(3px); }
+  to   { transform: translateY(0);     opacity: 1; filter: blur(0); }
+}
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+@keyframes slate-focus-flash {
+  0%   { box-shadow: 0 -3px 20px oklch(from var(--accent) l c h / 0.28); }
+  100% { box-shadow: 0 -3px 20px oklch(from var(--accent) l c h / 0); }
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  @keyframes oracle-resolve {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes oracle-fade-up {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes frame-enter-back {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes frame-enter-forward {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  .oracleLabelPulse {
+    animation: none;
+  }
+  .slate:focus-within {
+    animation: none;
+  }
+  .streamCursor {
+    display: none;
+  }
+}

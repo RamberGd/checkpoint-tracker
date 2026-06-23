@@ -1,0 +1,257 @@
+/* ─────────────────────────────────────────
+   CheckPoint — What's on Sale
+   Full-viewport deal board · no scroll
+   ───────────────────────────────────────── */
+
+/* ── Shared column grid ── */
+:is(.colRow, .dealRow) {
+  display: grid;
+  grid-template-columns:
+    3.5rem
+    1fr
+    clamp(5.5rem, 7vw, 8rem)
+    clamp(6rem, 7.5vw, 8.5rem)
+    clamp(6rem, 7.5vw, 8.5rem);
+  align-items: center;
+  padding-inline: clamp(1rem, 3vw, 2.5rem);
+}
+
+/* ── Page shell ── */
+.page {
+  height: 100dvh;
+  overflow: hidden;
+  position: relative;
+  background: var(--bg);
+}
+
+/* ── Cinematic backdrop ── */
+.backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.backdropImg {
+  object-fit: cover;
+  object-position: center 30%;
+  opacity: 0.22;
+  filter: grayscale(1) brightness(0.3);
+}
+
+.backdropOverlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to bottom, var(--bg) 0%, transparent 18%, transparent 82%, var(--bg) 100%),
+    linear-gradient(to right,  var(--bg) 0%, transparent 12%, transparent 88%, var(--bg) 100%);
+}
+
+/* ── Board: occupies everything below the fixed nav ── */
+.board {
+  position: absolute;
+  inset: 0;
+  /* clears fixed nav: padding-block(max) × 2 + caption font × line-height */
+  padding-top: clamp(2.4rem, 3.8vw, 3.2rem);
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+}
+
+/* ── Page header row ── */
+.boardTop {
+  flex-shrink: 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-top: 0.5rem;
+  padding-bottom: 0.45rem;
+  padding-inline: clamp(1rem, 3vw, 2.5rem);
+  border-bottom: 1px solid var(--rule);
+}
+
+.boardTitle {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(2.5rem, 5vw, 5rem);
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.scanBtn {
+  font-family: var(--font-mono);
+  font-size: clamp(0.7rem, 1vw, 0.85rem);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 200ms ease, opacity 200ms ease;
+  line-height: 1;
+  opacity: 0.55;
+  align-self: flex-end;
+  padding-bottom: 0.1em;
+}
+
+.scanBtn:hover {
+  color: var(--accent);
+  opacity: 1;
+}
+
+.scanBtn:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.scanBtnActive {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* ── Column header row ── */
+.colRow {
+  flex-shrink: 0;
+  padding-top: 0.28rem;
+  padding-bottom: 0.28rem;
+  border-bottom: 1px solid oklch(0.22 0.004 330);
+}
+
+.colCell {
+  font-family: var(--font-mono);
+  font-size: clamp(0.65rem, 0.85vw, 0.78rem);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  opacity: 0.55;
+}
+
+.colRight {
+  text-align: right;
+  letter-spacing: 0;
+}
+
+/* ── Deal list: fills remaining viewport height ── */
+.dealList {
+  flex: 1;
+  overflow: hidden;
+  display: grid;
+  grid-auto-rows: 1fr;
+}
+
+/* ── Individual deal row ── */
+.dealRow {
+  border-bottom: 1px solid var(--rule);
+  position: relative;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+
+  animation: row-scan 300ms var(--ease-out-expo) both;
+  animation-delay: calc(var(--i, 0) * 20ms);
+}
+
+.dealRow:not([href]) {
+  cursor: default;
+  pointer-events: none;
+}
+
+.dealRow:hover {
+  background: oklch(0.11 0.006 330);
+}
+
+/* Scanner-line: bottom rule flashes amber on hover */
+.dealRow::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--accent);
+  opacity: 0;
+  transition: opacity 160ms ease;
+}
+
+.dealRow:hover::after {
+  opacity: 1;
+}
+
+/* ── Cell contents ── */
+.cellIndex {
+  font-family: var(--font-mono);
+  font-size: clamp(0.8rem, 1vw, 0.95rem);
+  color: var(--muted);
+  opacity: 0.38;
+  letter-spacing: 0.06em;
+}
+
+.cellTitle {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--type-section-head);
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-right: 1rem;
+  line-height: 1;
+}
+
+.cellStore {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: clamp(1.1rem, 1.5vw, 1.35rem);
+  color: var(--muted);
+  line-height: 1;
+}
+
+.cellDiscount {
+  font-family: var(--font-mono);
+  font-size: clamp(1.3rem, 1.8vw, 1.65rem);
+  color: var(--accent);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+.cellPrice {
+  font-family: var(--font-mono);
+  font-size: clamp(1.3rem, 1.8vw, 1.65rem);
+  color: var(--ink);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  opacity: 0.75;
+  line-height: 1;
+}
+
+/* ── Keyframes ── */
+@keyframes row-scan {
+  from {
+    opacity: 0;
+    transform: translateX(-7px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes spin-once {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .dealRow {
+    animation: none;
+  }
+
+  .refreshSpin {
+    animation: none;
+  }
+}

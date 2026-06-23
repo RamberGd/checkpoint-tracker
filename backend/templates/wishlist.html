@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <meta charset="UTF-8">
+    <title>wishlist</title>
+</head>
+<body>
+    <h1>Wishlist</h1>
+    {% for wishlist_item in games %}
+        <a href="{{url_for('game', game_id=wishlist_item.game.igdb_id) }}">
+        <img src="{{ wishlist_item.game.cover_url }}" alt="{{ wishlist_item.game.title }}" width="200">
+        </a>
+    {% else %}
+        <p>Your wishlist is empty.</p>
+    {% endfor %}
+
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+<body>
+    <h1>Favorites</h1>
+    {% for favorite_item in games %}
+        <a href="{{url_for('game', game_id=favorite_item.game.igdb_id) }}">
+        <img src="{{ favorite_item.game.cover_url }}" alt="{{ favorite_item.game.title }}" width="200">
+        </a>
+    {% else %}
+        <p>No favorite games yet</p>
+    {% endfor %}
+{% endblock %}

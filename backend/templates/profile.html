@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+
+    <div>
+        <h1>Profile</h1>
+        <a href ="{{ url_for('edit_profile') }}">
+            <button>Edit Profile</button>
+        </a>
+    </div>
+
+    {% if user.profile_pic %}
+    <img src="{{ url_for('static', filename='uploads/' + user.profile_pic) }}" width="200" height="200">
+    {% else %}
+    <img src="{{ url_for('static', filename='images/fallback_avatar.png') }}" width="200" height="200">
+    {% endif %}
+
+    <p> @{{user.username}} </p>
+
+
+
+
+    <h2> Favourites </h2>
+    <a href="{{url_for('favorites')}}">
+        <button> View All </button>
+    </a>
+
+
+    <div id="favourites-section" style="display: flex; gap: 1rem;">
+        {% for ug in favourites_shortlist %}
+        <div style="display: flex; flex-direction: column; align-items: center;">
+            <a href="{{ url_for('game', game_id=ug.game.igdb_id) }}">
+                <img src="{{ ug.game.cover_url }}">
+                <p>{{ ug.game.title }}</p>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+
+
+<h2> Wishlist </h2>
+    <a href="{{url_for('wishlist')}}">
+        <button> View All</button>
+    </a>
+
+    <div id="wishlist-section" style="display: flex; gap: 1rem;">
+        {% for ug in wishlist_shortlist %}
+        <div style="display: flex; flex-direction: column; align-items: center;">
+            <a href="{{ url_for('game', game_id=ug.game.igdb_id) }}">
+                <img src="{{ ug.game.cover_url }}">
+                <p>{{ ug.game.title }}</p>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+
+    <h2> Recently Played </h2>
+    <a href="{{url_for('played')}}">
+            <button> View All</button>
+    </a>
+
+    <div id="played-section" style="display: flex; gap: 1rem;">
+        {% for ug in played_shortlist %}
+        <div style="display: flex; flex-direction: column; align-items: center;">
+            <a href="{{ url_for('game', game_id=ug.game.igdb_id) }}">
+                <img src="{{ ug.game.cover_url }}">
+                <p>{{ ug.game.title }}</p>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <h2> Reviews </h2>
+
+    {% for review in user_reviews %}
+    <img src ="{{ review.game.cover_url }}" alt="{{ review.game.title }} cover" width="100">
+    <h3>{{ review.game.title }}</h3>
+    <p>Rating: {{ review.rating }}/5</p>
+    <p>{{ review.comment }}</p>
+    <form method="POST" action="{{url_for('delete_review', review_id=review.id)}}">
+        <button type="submit">Delete</button>
+    </form>
+    {% endfor %}
+
+{% endblock %}

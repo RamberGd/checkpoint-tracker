@@ -1,0 +1,438 @@
+/* ─────────────────────────────────────────
+   CheckPoint — Signup Page
+   Cinematic darkroom editorial · Two-column
+   ───────────────────────────────────────── */
+
+/* ── Local tokens ── */
+.page {
+  --error: oklch(0.65 0.18 25);
+  --flicker: 0.92;
+
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 92% 92% at 50% 50%, transparent 15%, oklch(0.03 0 0 / 0.93) 100%),
+    var(--bg);
+}
+
+/* ── Nav ── */
+.nav {
+  position: fixed;
+  top: 0;
+  inset-inline: 0;
+  z-index: var(--z-nav);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: clamp(0.65rem, 1.1vw, 0.9rem);
+  padding-inline: clamp(1rem, 3vw, 2.5rem);
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.nav::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  bottom: -2.5rem;
+  background: linear-gradient(to bottom, var(--bg) 40%, transparent 100%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.navMeta,
+.navAuth {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+}
+
+.navSep {
+  opacity: 0.35;
+  user-select: none;
+}
+
+.navLink {
+  transition: color 180ms ease;
+}
+
+.navLink:hover {
+  color: var(--ink);
+}
+
+/* ── Two-column layout ── */
+.content {
+  display: grid;
+  grid-template-columns: 55fr 45fr;
+  min-height: 100svh;
+  position: relative;
+  z-index: 2;
+}
+
+/* ── Form column ── */
+.formSide {
+  padding-top: clamp(7rem, 12vw, 10rem);
+  padding-bottom: clamp(3rem, 6vw, 5.5rem);
+  padding-inline: var(--gutter);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(2.25rem, 4vw, 3.5rem);
+}
+
+.formHeader {
+  display: flex;
+  flex-direction: column;
+}
+
+.issueLabel {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  margin-bottom: clamp(1rem, 1.8vw, 1.5rem);
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--type-headline);
+  line-height: 0.88;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-transform: uppercase;
+  text-wrap: balance;
+  margin-left: -0.04em;
+  text-shadow:
+    3px 3px 0 oklch(0.52 0.155 328 / 0.62),
+    -1px -1px 0 oklch(0.75 0.150 68 / 0.34),
+    0 0 80px oklch(0.52 0.155 328 / var(--flicker, 0.92));
+  transition: text-shadow 80ms ease;
+}
+
+.subline {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-weight: 400;
+  font-size: var(--type-subhead);
+  color: var(--muted);
+  margin-top: clamp(1.25rem, 2vw, 1.75rem);
+  line-height: 1.4;
+}
+
+/* ── Form ── */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.5rem, 2.5vw, 2.25rem);
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.25rem, 1.8vw, 1.75rem);
+}
+
+/* Field group: mono label + bottom-border input (Option B) */
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.fieldInput {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: clamp(0.95rem, 1.3vw, 1.1rem);
+  padding: 0.5rem 0 0.65rem;
+  width: 100%;
+  caret-color: var(--primary);
+  clip-path: inset(0 0 -22px 0);
+  transition: border-color 220ms ease, box-shadow 300ms ease;
+}
+
+.fieldInput:focus {
+  outline: none;
+  border-bottom-color: var(--primary);
+}
+
+/* ── Field bloom — bottom-only glow via clip-path ── */
+.fieldInput[data-field="username"]:focus {
+  border-bottom-color: oklch(0.62 0.120 328);
+  box-shadow: 0 0 16px 4px oklch(0.52 0.155 328 / 0.52);
+}
+.fieldInput[data-field="email"]:focus {
+  border-bottom-color: oklch(0.72 0.130 58);
+  box-shadow: 0 0 16px 4px oklch(0.72 0.14 58 / 0.46);
+}
+.fieldInput[data-field="password"]:focus,
+.fieldInput[data-field="confirm"]:focus {
+  border-bottom-color: oklch(0.55 0.130 280);
+  box-shadow: 0 0 16px 4px oklch(0.42 0.15 280 / 0.48);
+}
+
+/* ── Label shift on sibling field focus (CSS :has) ── */
+.fieldLabel {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 0.45rem;
+  transition: color 220ms ease, text-shadow 220ms ease;
+}
+.fieldGroup:has([data-field="username"]:focus) .fieldLabel {
+  color: oklch(0.70 0.075 328);
+  text-shadow: 0 0 10px oklch(0.52 0.155 328 / 0.35);
+}
+.fieldGroup:has([data-field="email"]:focus) .fieldLabel {
+  color: oklch(0.72 0.080 58);
+  text-shadow: 0 0 10px oklch(0.72 0.14 58 / 0.32);
+}
+.fieldGroup:has([data-field="password"]:focus) .fieldLabel,
+.fieldGroup:has([data-field="confirm"]:focus) .fieldLabel {
+  color: oklch(0.62 0.080 280);
+  text-shadow: 0 0 10px oklch(0.42 0.15 280 / 0.35);
+}
+
+.fieldInput::placeholder {
+  color: oklch(0.52 0.018 330 / 0.32);
+}
+
+.fieldInput::selection {
+  background: oklch(0.52 0.155 328 / 0.28);
+  color: var(--ink);
+}
+
+.fieldInput:-webkit-autofill,
+.fieldInput:-webkit-autofill:hover,
+.fieldInput:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--ink);
+  -webkit-box-shadow: 0 0 0 1000px var(--bg) inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.fieldInput:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.fieldInputError {
+  border-bottom-color: var(--error);
+}
+
+.fieldErrorMsg {
+  font-family: var(--font-mono);
+  font-size: calc(var(--type-caption) * 0.88);
+  color: var(--error);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 0.35rem;
+}
+
+.formErrorMsg {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--error);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ── Submit button — matches .ctaButton from landing (Option D) ── */
+.submitBtn {
+  display: inline-block;
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 0.8em 2.2em;
+  background: transparent;
+  cursor: pointer;
+  transition:
+    background 220ms ease,
+    color 220ms ease,
+    border-color 220ms ease,
+    opacity 200ms ease;
+}
+
+.submitBtn:hover:not(:disabled) {
+  background: var(--accent);
+  color: oklch(0.12 0 0);
+}
+
+.submitBtn:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.submitBtnSuccess {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.submitBtnSuccess:hover:not(:disabled) {
+  background: var(--primary);
+  color: var(--ink);
+}
+
+/* ── Login prompt ── */
+.loginPrompt {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.loginLink {
+  color: var(--ink);
+  transition: color 180ms ease;
+}
+
+.loginLink:hover {
+  color: var(--primary);
+}
+
+/* ── Editorial aside (Option A) ── */
+.aside {
+  border-left: 1px solid var(--rule);
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+}
+
+.asideInner {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(7rem, 12vw, 10rem) clamp(2rem, 4vw, 4rem) clamp(3rem, 6vw, 5.5rem);
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.asideTop {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.25rem, 2vw, 2rem);
+}
+
+.asideMasthead {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(1.1rem, 1.8vw, 1.6rem);
+  letter-spacing: 0.06em;
+  color: oklch(0.52 0.018 330 / 0.55);
+  text-transform: uppercase;
+}
+
+.asideTopRule {
+  width: 36px;
+  height: 1px;
+  background: var(--rule);
+}
+
+.asideCenter {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 1.6vw, 1.4rem);
+}
+
+.asideVolume {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.asidePullQuote {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.55rem, 2.6vw, 2.3rem);
+  line-height: 1.28;
+  color: var(--primary);
+  max-width: 16ch;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.asideBottom {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.25rem, 2vw, 1.75rem);
+}
+
+.asideBottomRule {
+  width: 36px;
+  height: 1px;
+  background: var(--rule);
+}
+
+.asideFooter {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* Large decorative checkmark watermark */
+.asideWatermark {
+  position: absolute;
+  bottom: -18%;
+  left: -12%;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(22rem, 46vw, 46rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+  opacity: 0.055;
+  user-select: none;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* ── Responsive ── */
+@media (max-width: 860px) {
+  .content {
+    grid-template-columns: 1fr;
+  }
+
+  .aside {
+    display: none;
+  }
+
+  .formSide {
+    justify-content: flex-start;
+    padding-top: clamp(6rem, 14vw, 8rem);
+    min-height: 100svh;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heading {
+    text-shadow:
+      3px 3px 0 oklch(0.52 0.155 328 / 0.62),
+      -1px -1px 0 oklch(0.75 0.150 68 / 0.34) !important;
+    transition: none !important;
+  }
+
+  .fieldInput,
+  .fieldLabel {
+    transition: none !important;
+  }
+}

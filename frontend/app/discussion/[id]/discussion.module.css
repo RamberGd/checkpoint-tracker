@@ -1,0 +1,436 @@
+/* ─────────────────────────────────────────
+   CheckPoint — Discussion Page
+   Cinematic editorial · Intimate thread
+   ───────────────────────────────────────── */
+
+/* ── Page shell ── */
+.page {
+  position: relative;
+  min-height: 100svh;
+  background: var(--bg);
+}
+
+/* ── Nav ── */
+.nav {
+  position: fixed;
+  top: 0;
+  inset-inline: 0;
+  z-index: var(--z-nav);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: clamp(0.65rem, 1.1vw, 0.9rem);
+  padding-inline: clamp(1rem, 3vw, 2.5rem);
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.nav::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  bottom: -2.5rem;
+  background: linear-gradient(to bottom, var(--bg) 40%, transparent 100%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.navMeta,
+.navAuth {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+}
+
+.navSep {
+  opacity: 0.35;
+  user-select: none;
+}
+
+.navLink {
+  transition: color 180ms ease;
+}
+
+.navLink:hover {
+  color: var(--ink);
+}
+
+.navLink:focus-visible {
+  outline: 2px solid var(--muted);
+  outline-offset: 3px;
+}
+
+/* ── Main ── */
+.main {
+  padding-top: clamp(7rem, 12vw, 10rem);
+}
+
+/* ── Page header ── */
+.headerSection {
+  padding-inline: var(--gutter);
+  padding-bottom: clamp(2.5rem, 4vw, 3.5rem);
+  border-bottom: 1px solid var(--rule);
+  /* Narrow reading column inside */
+  max-width: calc(820px + 2 * var(--gutter));
+}
+
+.backLink {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  margin-bottom: clamp(1.25rem, 2.2vw, 1.75rem);
+  border-bottom: 1px solid transparent;
+  padding-bottom: 0.1em;
+  transition: color 200ms ease, border-bottom-color 200ms ease;
+}
+
+.backLink:hover {
+  color: var(--ink);
+  border-bottom-color: var(--rule);
+}
+
+.backLink:focus-visible {
+  outline: 2px solid var(--muted);
+  outline-offset: 3px;
+}
+
+.pageTitle {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--type-page-title);
+  line-height: 0.88;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  text-transform: uppercase;
+  text-wrap: balance;
+  text-shadow:
+    3px 3px 0 oklch(0.52 0.155 328 / 0.55),
+    -1px -1px 0 oklch(0.75 0.150 68 / 0.25);
+}
+
+/* ── Featured review ── */
+.featuredSection {
+  padding-inline: var(--gutter);
+  padding-block: clamp(3rem, 5vw, 4.5rem);
+  border-bottom: 1px solid var(--rule);
+  max-width: calc(820px + 2 * var(--gutter));
+}
+
+.featuredReview {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 1.8vw, 1.5rem);
+}
+
+.featuredMeta {
+  display: flex;
+  align-items: baseline;
+  gap: clamp(1rem, 2vw, 1.75rem);
+  flex-wrap: wrap;
+}
+
+.featuredUsername {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--type-section-head);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-transform: uppercase;
+}
+
+.featuredAt {
+  color: var(--primary);
+}
+
+.featuredRating {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.featuredRule {
+  height: 1px;
+  background: var(--rule);
+  margin-block: -0.25rem;
+}
+
+.featuredComment {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: clamp(1.05rem, 1.8vw, 1.3rem);
+  color: var(--ink);
+  line-height: 1.78;
+  max-width: 64ch;
+  text-wrap: pretty;
+  border: none;
+  padding: 0;
+  quotes: none;
+}
+
+/* ── Delete button (shared) ── */
+.deleteBtn {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: calc(var(--type-caption) * 0.88);
+  color: oklch(0.40 0.010 330);
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color 180ms ease;
+  text-align: left;
+  align-self: flex-start;
+}
+
+.deleteBtn:hover {
+  color: oklch(0.65 0.18 25);
+}
+
+.deleteBtn:focus-visible {
+  outline: 2px solid oklch(0.65 0.18 25 / 0.5);
+  outline-offset: 3px;
+}
+
+/* ── Replies section ── */
+.repliesSection {
+  background: var(--surface);
+  padding-bottom: clamp(5rem, 9vw, 8rem);
+}
+
+.repliesInner {
+  padding-inline: var(--gutter);
+  max-width: calc(820px + 2 * var(--gutter));
+}
+
+.repliesHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: clamp(2.75rem, 4.5vw, 4rem);
+  margin-bottom: 0;
+  border-top: 1px solid var(--rule);
+}
+
+.repliesTitle {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--type-section-head);
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-transform: uppercase;
+}
+
+.repliesCount {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--type-section-head);
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  color: var(--rule);
+}
+
+/* ── Empty state ── */
+.emptyState {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: clamp(0.9rem, 1.2vw, 1rem);
+  color: var(--muted);
+  line-height: 1.7;
+  padding-top: clamp(1.75rem, 3vw, 2.5rem);
+  padding-bottom: clamp(0.5rem, 1vw, 0.75rem);
+  border-top: 1px solid var(--rule);
+  margin-top: clamp(0.25rem, 0.5vw, 0.5rem);
+}
+
+/* ── Reply list ── */
+.repliesList {
+  display: flex;
+  flex-direction: column;
+}
+
+.replyItem {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: clamp(1.25rem, 2.5vw, 2.5rem);
+  align-items: start;
+  padding-block: clamp(1.75rem, 3vw, 2.5rem);
+  border-top: 1px solid var(--rule);
+  margin-top: clamp(0.25rem, 0.5vw, 0.5rem);
+}
+
+.replyLeft {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.4rem, 0.7vw, 0.6rem);
+  padding-top: 0.08em;
+  min-width: clamp(100px, 14vw, 160px);
+}
+
+.replyUsername {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(0.9rem, 1.4vw, 1.2rem);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-transform: uppercase;
+  line-height: 0.92;
+  text-wrap: balance;
+}
+
+.replyAt {
+  color: var(--primary);
+}
+
+.replyComment {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: clamp(0.9rem, 1.2vw, 1.05rem);
+  color: var(--muted);
+  line-height: 1.72;
+  max-width: 60ch;
+  text-wrap: pretty;
+  padding-top: 0.1em;
+}
+
+/* ── Reply form ── */
+.replyForm {
+  margin-top: clamp(3rem, 5vw, 5rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.1rem, 1.8vw, 1.5rem);
+  max-width: 680px;
+}
+
+.formLabel {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--type-section-head);
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-transform: uppercase;
+}
+
+.formRule {
+  height: 1px;
+  background: var(--rule);
+  margin-top: -0.25rem;
+}
+
+.textarea {
+  width: 100%;
+  background: oklch(0.09 0.004 330);
+  border: 1px solid var(--rule);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: clamp(0.9rem, 1.2vw, 1rem);
+  line-height: 1.7;
+  padding: 1rem 1.25rem;
+  resize: vertical;
+  min-height: 7rem;
+  transition: border-color 200ms ease;
+}
+
+.textarea::placeholder {
+  color: var(--muted);
+  opacity: 0.65;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: oklch(0.52 0.155 328 / 0.65);
+}
+
+.textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.submitBtn {
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 0.8em 2rem;
+  background: transparent;
+  cursor: pointer;
+  transition:
+    background 220ms ease,
+    color 220ms ease,
+    border-color 220ms ease;
+}
+
+.submitBtn:hover:not(:disabled) {
+  background: var(--accent);
+  color: oklch(0.10 0 0);
+}
+
+.submitBtn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.submitBtn:disabled {
+  color: var(--muted);
+  border-color: var(--rule);
+  cursor: not-allowed;
+}
+
+/* ── Responsive ── */
+@media (max-width: 720px) {
+  .replyItem {
+    grid-template-columns: 1fr;
+    gap: clamp(0.6rem, 1.2vw, 0.85rem);
+  }
+
+  .replyLeft {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 1rem;
+    min-width: auto;
+  }
+
+  .replyComment {
+    max-width: 100%;
+    padding-top: 0;
+  }
+}
+
+@media (max-width: 440px) {
+  .pageTitle {
+    font-size: clamp(2.5rem, 14vw, 4rem);
+  }
+
+  .replyForm {
+    max-width: 100%;
+  }
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .navLink,
+  .backLink,
+  .deleteBtn,
+  .textarea,
+  .submitBtn {
+    transition: none !important;
+  }
+}

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+
+    <h1>Review Discussion</h1>
+    <h2>{{ review.user.username }}</h2>
+    <p>
+        Rating:
+        {{ review.rating }}/5
+    </p>
+    <p>
+        {{ review.comment }}
+        {% if review.user_id == current_user.id %}
+            <form method="POST" action="{{ url_for('delete_review', review_id=review.id) }}">
+                <button type="submit">Delete Review</button>
+            </form>
+        {% endif %}
+    </p>
+    <h2>Replies</h2>
+
+    {% if replies %}
+        {% for reply in replies %}
+            <p><strong>{{ reply.user.username }}</strong></p>
+            <p>Rating: {{ review.rating }}/5</p>
+            <p>{{ reply.comment }}</p>
+            {% if reply.user_id == current_user.id %}
+                <form method="POST" action="{{ url_for('delete_reply', reply_id=reply.id) }}">
+                    <button type="submit">Delete</button>
+                </form>
+            {% endif %}
+
+        {% endfor %}
+    {% else %}
+        <p>No replies yet.</p>
+    {% endif %}
+    <h2>Leave a Reply</h2>
+    <form action="{{ url_for('reply', review_id=review.id) }}" method="POST">
+        <textarea
+            name="comment"
+            rows="5"
+            cols="50"
+            required
+        ></textarea>
+        <button type="submit">
+            Post Reply
+        </button>
+    </form>
+    <br>
+    <a href="{{ url_for('game', game_id=review.game_id) }}">
+        Back to Game
+    </a>
+
+
+{% endblock %}

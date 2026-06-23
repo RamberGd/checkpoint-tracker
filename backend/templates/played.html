@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+
+    <meta charset="UTF-8">
+    <title>Played</title>
+</head>
+<body>
+  <h1>Played</h1>
+    {% for played_item in games %}
+        <a href="{{url_for('game', game_id=played_item.game.igdb_id) }}">
+        <img src="{{ played_item.game.cover_url }}" alt="{{ played_item.game.title }}" width="200">
+        </a>
+    {% else %}
+        <p>You have no played games</p>
+    {% endfor %}
+
+{% endblock %}

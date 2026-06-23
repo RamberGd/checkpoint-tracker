@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+
+  <h1>THESE ARE THE GAMES ON SALE!</h1>
+  <h2>Refresh to see new deals!</h2>
+  <div id="deals">
+
+<!-- This code is not html, it is to display the deal information from flask. The way Itad
+ works, is that everything is stored under a main "Deal", which has "Title", and it has a nested "Deal", which can then call things 
+ like price etc. When callin deal.deal.price.amount, it refers to basically a nested dictionary with the price. -->
+    {% for deal in deals %}
+      <div>
+        <a href="{{ deal.deals[0].url }}"><h2>{{ deal.title }}</h2></a>
+        <p>Price: ${{ deal.deals[0].price.amount }}</p>
+        <p>Store: {{ deal.deals[0].shop.name }}</p>
+        <p>Discount: {{ deal.deals[0].cut }}% off</p>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

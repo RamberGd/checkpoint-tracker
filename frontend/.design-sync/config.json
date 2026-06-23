@@ -1,0 +1,19 @@
+{
+  "pkg": "checkpoint-frontend",
+  "globalName": "CheckPoint",
+  "shape": "package",
+  "srcDir": "app/components",
+  "cssEntry": "app/globals.css",
+  "projectId": "ee5d2427-6e17-45e3-951c-08e8d753dfab",
+  "componentSrcMap": {
+    "CropMarks": "app/components/CropMarks.tsx",
+    "CropModal": "app/components/CropModal.tsx",
+    "EmptyShelf": "app/components/EmptyShelf.tsx",
+    "Reveal": "app/components/Reveal.tsx"
+  },
+  "readmeHeader": ".design-sync/conventions.md",
+  "overrides": {
+    "CropMarks": { "cardMode": "single" },
+    "CropModal": { "cardMode": "single", "viewport": "900x680" }
+  }
+}

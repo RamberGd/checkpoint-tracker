@@ -1,0 +1,46 @@
+/* ─────────────────────────────────────────
+   EmptyShelf — ghost covers + editorial line
+   ───────────────────────────────────────── */
+
+.shelf {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.5rem, 2.5vw, 2.25rem);
+}
+
+.ghosts {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: clamp(0.65rem, 1.2vw, 1.1rem);
+}
+
+.ghost {
+  aspect-ratio: 3 / 4;
+  border: 1px solid var(--rule);
+}
+
+.line {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: clamp(0.95rem, 1.3vw, 1.1rem);
+  color: var(--muted);
+  line-height: 1.6;
+  max-width: 52ch;
+}
+
+/* ── Responsive — mirrors list page breakpoints ── */
+@media (max-width: 1200px) {
+  .ghosts { grid-template-columns: repeat(5, 1fr); }
+}
+
+@media (max-width: 900px) {
+  .ghosts { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (max-width: 660px) {
+  .ghosts { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 420px) {
+  .ghosts { grid-template-columns: repeat(2, 1fr); }
+}

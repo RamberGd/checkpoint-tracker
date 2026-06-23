@@ -1,0 +1,650 @@
+/* ─────────────────────────────────────────
+   CheckPoint Landing — Page Styles
+   Six editorial spreads + nav
+   ───────────────────────────────────────── */
+
+/* ── Crop Marks ── */
+.cropMarks {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+}
+
+.cropMark {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  opacity: 0.28;
+}
+
+.cropMark::before,
+.cropMark::after {
+  content: '';
+  position: absolute;
+  background: var(--ink);
+}
+
+/* horizontal arm */
+.cropMark::before {
+  width: 100%;
+  height: 1px;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+}
+
+/* vertical arm */
+.cropMark::after {
+  width: 1px;
+  height: 100%;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+}
+
+.cropBL { bottom: 14px; left: 14px; }
+.cropBR { bottom: 14px; right: 14px; }
+
+/* ── Nav — printer's slug line ── */
+.nav {
+  position: fixed;
+  top: 0;
+  inset-inline: 0;
+  z-index: var(--z-nav);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: clamp(0.65rem, 1.1vw, 0.9rem);
+  padding-inline: clamp(1rem, 3vw, 2.5rem);
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.nav::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  bottom: -2.5rem;
+  background: linear-gradient(to bottom, var(--bg) 40%, transparent 100%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.navMeta,
+.navAuth {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+}
+
+.navSep {
+  opacity: 0.35;
+  user-select: none;
+}
+
+.navLink {
+  transition: color 180ms ease;
+}
+
+.navLink:hover {
+  color: var(--ink);
+}
+
+/* ── SPREAD 1: Cover ── */
+.cover {
+  position: relative;
+  height: 100svh;
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-top: clamp(5rem, 9vw, 7rem);
+  padding-bottom: clamp(3rem, 6vw, 5.5rem);
+  padding-inline: var(--gutter);
+  overflow: hidden;
+  /* Dark vignette only — lamp layers handle the light source */
+  background:
+    radial-gradient(ellipse 92% 92% at 50% 50%, transparent 15%, oklch(0.03 0.000 0 / 0.93) 100%),
+    var(--bg);
+  /* Flicker default — overridden by CoverLamp JS */
+  --flicker: 0.92;
+}
+
+/* Tight hotspot — the "bulb" origin, bottom-left. Position driven by --lamp-x/y (set by CoverLamp.tsx mouse tracking). */
+.lampGlow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: var(--flicker);
+  background:
+    radial-gradient(ellipse 50% 42% at var(--lamp-x, 6%) var(--lamp-y, 99%), oklch(0.52 0.155 328 / 0.32) 0%, transparent 50%),
+    radial-gradient(ellipse 72% 68% at var(--lamp-x, 6%) var(--lamp-y, 99%), oklch(0.52 0.155 328 / 0.12) 0%, transparent 62%);
+  transition: opacity 75ms ease;
+}
+
+/* Wide falloff — light flooding the panel floor */
+.lampFalloff {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: calc(var(--flicker) * 0.48);
+  background:
+    radial-gradient(ellipse 76% 105% at var(--lamp-x, 6%) calc(var(--lamp-y, 99%) + 8%), oklch(0.52 0.155 328 / 0.082) 0%, transparent 58%),
+    radial-gradient(ellipse 68% 84% at var(--lamp-x, 6%) calc(var(--lamp-y, 99%) + 4%), oklch(0.52 0.155 328 / 0.068) 0%, transparent 66%);
+  transition: opacity 110ms ease;
+}
+
+/* Spanning image — lives in Panel B, bleeds LEFT into Panel A territory.
+   left: -43vw puts the left edge at track position 57vw (right 43% of Panel A).
+   width: 121vw puts the right edge at track 178vw = 78vw into Panel B at full scroll. */
+.panelBSpan {
+  position: absolute;
+  top: 0;
+  left: -43vw;
+  width: 121vw;
+  height: 100%;
+  overflow: hidden;
+  opacity: 0.42;
+  pointer-events: none;
+}
+
+.panelBSpan::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(to right, var(--bg) 0%, transparent 16%),
+    linear-gradient(to left, var(--bg) 0%, transparent 30%),
+    linear-gradient(to bottom, oklch(0.03 0 0 / 0.80) 0%, transparent 25%, transparent 72%, oklch(0.03 0 0 / 0.80) 100%);
+}
+
+.coverIssue {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: calc(0.55 + 0.35 * var(--flicker));
+  transition: opacity 110ms ease;
+}
+
+.coverBottom {
+  display: flex;
+  flex-direction: column;
+}
+
+.coverTitle {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--type-display);
+  line-height: 0.88;
+  letter-spacing: -0.02em;
+  /* Lightness dims with the lamp — same physical space, same light source */
+  color: oklch(calc(0.80 + 0.13 * var(--flicker)) 0.012 330);
+  text-transform: uppercase;
+  text-wrap: balance;
+  margin-left: -0.04em;
+  /* Misregistration (static print offset) + directional shadow from bottom-right lamp (thrown up-left) */
+  text-shadow:
+    3px 3px 0 oklch(0.52 0.155 328 / 0.62),
+    -1px -1px 0 oklch(0.75 0.150 68 / 0.34),
+    -4px -6px 10px oklch(0.04 0 0 / calc(0.55 * var(--flicker)));
+  transition: text-shadow 80ms ease, color 80ms ease;
+}
+
+.coverSubline {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-weight: 400;
+  font-size: var(--type-subhead);
+  color: oklch(calc(0.42 + 0.10 * var(--flicker)) 0.018 330);
+  margin-top: clamp(1.25rem, 2vw, 2rem);
+  max-width: 38ch;
+  line-height: 1.4;
+  transition: color 110ms ease;
+}
+
+.coverRule {
+  width: clamp(50px, 12%, 90px);
+  height: 1px;
+  background: var(--accent);
+  margin-top: clamp(1.75rem, 3vw, 3rem);
+}
+
+/* ── SPREAD 2: Manifesto ── */
+.manifesto {
+  padding-block: clamp(7rem, 13vw, 14rem);
+  padding-inline: var(--gutter);
+  display: grid;
+  grid-template-columns: 56% 44%;
+  gap: 0 clamp(2rem, 4vw, 5rem);
+  align-items: center;
+}
+
+.manifestoInner {
+  max-width: 640px;
+}
+
+/* Right column: editorial pull quote in cinema rose */
+.manifestoPullAside {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: clamp(1rem, 3vw, 3rem);
+  border-left: 1px solid var(--rule);
+}
+
+.manifestoPull {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.4rem, 2.2vw, 2.1rem);
+  line-height: 1.3;
+  color: var(--primary);
+  max-width: 20ch;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.manifestoRule {
+  width: 36px;
+  height: 1px;
+  background: var(--muted);
+  margin-bottom: clamp(2rem, 3.5vw, 3.5rem);
+}
+
+.manifestoTitle {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--type-subhead);
+  color: var(--ink);
+  line-height: 1.3;
+  text-wrap: pretty;
+  max-width: 28ch;
+  margin-bottom: clamp(1.75rem, 3vw, 3rem);
+}
+
+.manifestoBody {
+  font-family: var(--font-body);
+  font-size: var(--type-body);
+  color: var(--muted);
+  line-height: 1.75;
+  max-width: 58ch;
+  text-wrap: pretty;
+}
+
+.manifestoBodyGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4em;
+}
+
+/* ── SPREAD 3: Archive ── */
+.archive {
+  padding-block: clamp(4rem, 7vw, 9rem);
+  padding-inline: var(--gutter);
+  background: var(--surface);
+}
+
+.archiveHeader {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: clamp(3.5rem, 6vw, 7rem);
+}
+
+.archiveCols {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  align-items: start;
+}
+
+.archiveCol {
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem 1.5rem 0 0;
+  border-top: 1px solid var(--rule);
+}
+
+
+.archiveCol:not(:last-child) {
+  border-right: 1px solid var(--rule);
+  padding-right: 1.5rem;
+  margin-right: 0;
+}
+
+.archiveCol:not(:first-child) {
+  padding-left: 1.5rem;
+}
+
+.archiveSlug {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  margin-bottom: 0.9rem;
+}
+
+.archiveDesc {
+  font-family: var(--font-body);
+  font-size: clamp(0.82rem, 1.1vw, 0.95rem);
+  color: var(--ink);
+  line-height: 1.62;
+  text-wrap: pretty;
+}
+
+/* ── SPREAD 4: Pull Quote Interlude ── */
+.interlude {
+  padding-block: clamp(8rem, 16vw, 20rem);
+  padding-inline: var(--gutter);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 55vh;
+}
+
+.interludeInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(2rem, 3.5vw, 3.5rem);
+}
+
+.interludeRulePair {
+  width: clamp(40px, 8%, 70px);
+  height: 1px;
+  background: var(--rule);
+}
+
+.interludeQuote {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--type-headline);
+  line-height: 0.88;
+  letter-spacing: -0.03em;
+  color: var(--primary);
+  text-transform: uppercase;
+  text-align: center;
+  text-wrap: balance;
+  max-width: 14ch;
+  text-shadow: 2px 2px 0 oklch(0.75 0.150 68 / 0.20);
+}
+
+/* ── SPREAD 5: Film Still ── */
+.still {
+  position: relative;
+  height: clamp(420px, 68vh, 720px);
+  overflow: hidden;
+}
+
+/* Duotone: cinema rose wash */
+.still::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--primary);
+  mix-blend-mode: multiply;
+  opacity: 0.42;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Gradient for caption legibility */
+.still::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    oklch(0.07 0.000 0 / 0.75) 0%,
+    transparent 45%
+  );
+  z-index: 2;
+  pointer-events: none;
+}
+
+.stillImage {
+  filter: grayscale(80%) contrast(1.15);
+}
+
+.stillParallaxImg {
+  position: absolute;
+  inset: -14% 0;
+  height: 128%;
+  filter: grayscale(100%) contrast(1.15) brightness(0.85);
+  will-change: transform;
+}
+
+.stillCaption {
+  position: absolute;
+  bottom: clamp(1.5rem, 2.5vw, 2.5rem);
+  left: var(--gutter);
+  right: var(--gutter);
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--ink);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  z-index: 3;
+  max-width: 70ch;
+  opacity: 0.75;
+}
+
+/* ── SPREAD 6: Closing ── */
+.closing {
+  padding-block: clamp(4.5rem, 8vw, 10rem);
+  padding-inline: var(--gutter);
+}
+
+.closingInner {
+  max-width: var(--narrow);
+}
+
+.closingAccentRule {
+  width: clamp(36px, 6%, 50px);
+  height: 1px;
+  background: var(--accent);
+  margin-bottom: clamp(2rem, 3.5vw, 3.5rem);
+}
+
+.closingTitle {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-weight: 400;
+  font-size: var(--type-section-head);
+  color: var(--ink);
+  line-height: 1.25;
+  text-wrap: pretty;
+  max-width: 28ch;
+  margin-bottom: clamp(2.5rem, 4vw, 4.5rem);
+}
+
+.ctaButton {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 0.8em 2.2em;
+  transition: background 220ms ease, color 220ms ease;
+}
+
+.ctaButton:hover {
+  background: var(--accent);
+  color: oklch(0.12 0.000 0);
+}
+
+.closingFoot {
+  margin-top: clamp(2.5rem, 4vw, 4rem);
+  padding-top: clamp(1.5rem, 2.5vw, 2rem);
+  border-top: 1px solid var(--rule);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* ── INTRO SCROLL SEQUENCE ── */
+.introDriver {
+  height: 200vh;
+}
+
+.introStage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+}
+
+.introTrack {
+  display: flex;
+  width: 200vw;
+  height: 100svh;
+  will-change: transform;
+}
+
+/* Both panels share this base — panel A adds lamp/vignette, panel B is flat */
+.introPanel {
+  width: 100vw;
+  height: 100svh;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-top: clamp(5rem, 9vw, 7rem);
+  padding-bottom: clamp(3rem, 6vw, 5.5rem);
+  padding-inline: var(--gutter);
+  background:
+    radial-gradient(ellipse 92% 92% at 50% 50%, transparent 15%, oklch(0.03 0 0 / 0.93) 100%),
+    var(--bg);
+  /* CoverLamp JS overrides this */
+  --flicker: 0.92;
+}
+
+.introPanelB {
+  background: var(--bg);
+  overflow: visible;
+}
+
+.introPanelBContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.introBHead {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--type-display);
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  text-transform: uppercase;
+  text-wrap: balance;
+  margin-left: -0.04em;
+  text-shadow:
+    3px 3px 0 oklch(0.52 0.155 328 / 0.58),
+    -1px -1px 0 oklch(0.75 0.150 68 / 0.30);
+}
+
+.introBBody {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-weight: 400;
+  font-size: var(--type-subhead);
+  color: var(--muted);
+  margin-top: clamp(1.5rem, 2.5vw, 2.5rem);
+  max-width: 50ch;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+/* Panel A page-load entrance animations */
+@keyframes introSlideIn {
+  from { opacity: 0; transform: translateX(-40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes introFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.introSlideIn {
+  animation: introSlideIn 1.1s var(--ease-out-expo) both;
+}
+
+.introFadeIn {
+  animation: introFadeIn 0.9s var(--ease-out-expo) both;
+}
+
+.introDelay300 { animation-delay: 0.32s; }
+.introDelay500 { animation-delay: 0.55s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .introSlideIn,
+  .introFadeIn {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .panelBSpan {
+    opacity: 0.32;
+  }
+}
+
+@media (max-width: 640px) {
+  .navLogin {
+    display: none;
+  }
+
+  .archiveCols {
+    grid-template-columns: 1fr 1fr;
+    row-gap: 0;
+  }
+
+  .archiveCols > div:nth-child(n+3) .archiveCol {
+    border-top: 1px solid var(--rule);
+    padding-top: 1.25rem;
+  }
+
+  .panelBSpan {
+    display: none;
+  }
+
+  .manifesto {
+    grid-template-columns: 1fr;
+  }
+
+  .manifestoPullAside {
+    display: none;
+  }
+}

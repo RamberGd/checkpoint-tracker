@@ -1,0 +1,159 @@
+/* ─────────────────────────────────────────
+   CheckPoint — Design System
+   Cinematic editorial-zine · Dark · Full palette
+   ───────────────────────────────────────── */
+
+/* ── Design Tokens ── */
+:root {
+  /* Palette */
+  --bg:       oklch(0.07 0.000 0);
+  --surface:  oklch(0.13 0.008 330);
+  --primary:  oklch(0.52 0.155 328);
+  --accent:   oklch(0.75 0.150 68);
+  --ink:      oklch(0.93 0.012 330);
+  --muted:    oklch(0.52 0.018 330);
+  --rule:     oklch(0.20 0.005 330);
+
+  /* Typography */
+  --font-display: var(--ff-display), sans-serif;
+  --font-body:    var(--ff-body), serif;
+  --font-mono:    var(--ff-mono), monospace;
+
+  /* Type scale — fluid, per DESIGN.md */
+  --type-display:      clamp(4rem, 14vw, 9rem);
+  --type-headline:     clamp(2.5rem, 7vw, 5rem);
+  --type-subhead:      clamp(1.25rem, 3vw, 2rem);
+  --type-body:         clamp(1rem, 1.5vw, 1.2rem);
+  --type-caption:      clamp(0.7rem, 1vw, 0.85rem);
+
+  /* Inner-page scale — shared across profile / game / discussion */
+  --type-page-title:   clamp(3.5rem, 8vw, 6.5rem);
+  --type-section-head: clamp(1.75rem, 3vw, 2.75rem);
+
+  /* Layout — letterboxed, per DESIGN.md */
+  --gutter: clamp(2rem, 10vw, 12rem);
+  --narrow: min(680px, 100% - 2 * var(--gutter));
+
+  /* Easing */
+  --ease-out-expo:  cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+
+  /* Z-index scale */
+  --z-grain:   9990;
+  --z-overlay:  500;
+  --z-nav:      100;
+}
+
+/* ── Reset ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  cursor: none;
+}
+
+@media (pointer: coarse) {
+  *, *::before, *::after { cursor: auto; }
+}
+
+html {
+  color-scheme: dark;
+  scroll-behavior: smooth;
+  font-size: 85%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--type-body);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  background: none;
+  border: none;
+  font: inherit;
+  color: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+}
+
+img, video {
+  display: block;
+  max-width: 100%;
+}
+
+/* ── Film Grain ──
+   mix-blend-mode: screen — the only mode that shows texture on near-black.
+   overlay on oklch(0.07) = near-black + near-black = invisible.
+   SVG uses feColorMatrix to produce white specks with varying alpha from fractalNoise.
+   background-position shift is cheaper than translating a 200% element. */
+@keyframes grain-shift {
+  0%   { background-position: 0 0 }
+  10%  { background-position: -35px -45px }
+  20%  { background-position: 48px 32px }
+  30%  { background-position: -18px 61px }
+  40%  { background-position: 55px -28px }
+  50%  { background-position: -42px 15px }
+  60%  { background-position: 22px -55px }
+  70%  { background-position: -58px 38px }
+  80%  { background-position: 12px 48px }
+  90%  { background-position: -28px -18px }
+}
+
+.grain-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: var(--z-grain);
+  opacity: 0.045;
+  mix-blend-mode: screen;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 12 -5'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 200px 200px;
+  animation: grain-shift 0.4s steps(1) infinite;
+}
+
+/* ── Scroll Reveal ── */
+[data-reveal="hidden"] {
+  opacity: 0;
+  transform: translateY(22px);
+}
+
+[data-reveal="visible"] {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity  0.9s var(--ease-out-expo),
+    transform 0.9s var(--ease-out-expo);
+}
+
+[data-reveal="hidden-img"] {
+  opacity: 0;
+  filter: blur(8px);
+}
+
+[data-reveal="visible-img"] {
+  opacity: 1;
+  filter: blur(0);
+  transition:
+    opacity 1.4s var(--ease-out-expo),
+    filter  1.4s var(--ease-out-expo);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grain-overlay               { animation: none !important; }
+  [data-reveal]                { opacity: 1 !important; transform: none !important;
+                                  filter: none !important; transition: none !important; }
+}

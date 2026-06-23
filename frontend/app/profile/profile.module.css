@@ -1,0 +1,567 @@
+/* ─────────────────────────────────────────
+   CheckPoint — Profile Page
+   Cinematic editorial · Personal record
+   ───────────────────────────────────────── */
+
+/* ── Page shell ── */
+.page {
+  position: relative;
+  min-height: 100svh;
+  background: var(--bg);
+}
+
+/* ── Nav ── */
+.nav {
+  position: fixed;
+  top: 0;
+  inset-inline: 0;
+  z-index: var(--z-nav);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: clamp(0.65rem, 1.1vw, 0.9rem);
+  padding-inline: clamp(1rem, 3vw, 2.5rem);
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.nav::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  bottom: -2.5rem;
+  background: linear-gradient(to bottom, var(--bg) 40%, transparent 100%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.navMeta,
+.navAuth {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+}
+
+.navSep {
+  opacity: 0.35;
+  user-select: none;
+}
+
+.navLink {
+  transition: color 180ms ease;
+}
+
+.navLink:hover {
+  color: var(--ink);
+}
+
+/* ── Profile section ── */
+.profileSection {
+  padding-top: clamp(7rem, 12vw, 10rem);
+  padding-bottom: clamp(3.5rem, 6vw, 5rem);
+  padding-inline: var(--gutter);
+  border-bottom: 1px solid var(--rule);
+}
+
+.profileHeader {
+  display: flex;
+  gap: clamp(2rem, 4vw, 4.5rem);
+  align-items: stretch;
+}
+
+/* ── Avatar ── */
+.avatarWrap {
+  position: relative;
+  width: clamp(100px, 12vw, 148px);
+  aspect-ratio: 1;
+  flex-shrink: 0;
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  isolation: isolate;
+}
+
+.avatar {
+  filter: grayscale(55%) contrast(1.15);
+  transition: filter 0.6s var(--ease-out-expo);
+}
+
+.avatarWrap:hover .avatar {
+  filter: grayscale(15%) contrast(1.05);
+}
+
+.avatarOverlay {
+  position: absolute;
+  inset: 0;
+  background: var(--primary);
+  mix-blend-mode: color;
+  opacity: 0.42;
+  pointer-events: none;
+  transition: opacity 0.6s var(--ease-out-expo);
+}
+
+.avatarWrap:hover .avatarOverlay {
+  opacity: 0.12;
+}
+
+/* ── Profile meta ── */
+.profileMeta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: clamp(1.25rem, 2vw, 1.75rem);
+}
+
+.profileTopRow {
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 2.5vw, 2rem);
+  flex-wrap: wrap;
+}
+
+.username {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--type-page-title);
+  line-height: 0.88;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-transform: uppercase;
+  text-wrap: balance;
+  text-shadow:
+    3px 3px 0 oklch(0.52 0.155 328 / 0.55),
+    -1px -1px 0 oklch(0.75 0.150 68 / 0.30);
+}
+
+.usernameAt {
+  color: var(--primary);
+}
+
+.editBtn {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 0.65em 1.8em;
+  background: transparent;
+  cursor: pointer;
+  text-decoration: none;
+  flex-shrink: 0;
+  transition: background 220ms ease, color 220ms ease;
+}
+
+.editBtn:hover {
+  background: var(--accent);
+  color: oklch(0.12 0 0);
+}
+
+.editBtn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* ── Stats ── */
+.statsRule {
+  height: 1px;
+  width: 100%;
+  background: var(--rule);
+}
+
+.stats {
+  display: flex;
+  align-items: baseline;
+  gap: clamp(1rem, 2vw, 1.5rem);
+  flex-wrap: wrap;
+}
+
+.statItem {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45em;
+}
+
+.statNumber {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--type-section-head);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.statLabel {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.statDivider {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--rule);
+  opacity: 0.8;
+  user-select: none;
+}
+
+/* ── Game list section ── */
+.listSection {
+  padding-inline: var(--gutter);
+  padding-block: clamp(2.75rem, 4.5vw, 4rem);
+  border-bottom: 1px solid var(--rule);
+}
+
+.listHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: clamp(1.25rem, 2.2vw, 2rem);
+}
+
+.listTitle {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--type-section-head);
+  line-height: 0.88;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-transform: uppercase;
+}
+
+.viewMore {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 0.1em;
+  transition: color 200ms ease, border-bottom-color 200ms ease;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.viewMore:hover {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
+
+.viewMore:focus-visible {
+  outline: 2px solid var(--muted);
+  outline-offset: 3px;
+}
+
+/* ── Games contact sheet ── */
+.gamesRow {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: clamp(0.6rem, 1.2vw, 1rem);
+}
+
+.gameBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  text-decoration: none;
+}
+
+.gameCoverWrap {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  isolation: isolate;
+}
+
+.gameCover {
+  filter: grayscale(65%) contrast(1.15);
+  transition:
+    filter 0.5s var(--ease-out-expo),
+    transform 0.5s var(--ease-out-expo);
+}
+
+.gameBlock:hover .gameCover {
+  filter: grayscale(20%) contrast(1.08);
+  transform: scale(1.05);
+}
+
+.gameCoverOverlay {
+  position: absolute;
+  inset: 0;
+  background: var(--primary);
+  mix-blend-mode: color;
+  opacity: 0.32;
+  pointer-events: none;
+  transition: opacity 0.5s var(--ease-out-expo);
+}
+
+.gameBlock:hover .gameCoverOverlay {
+  opacity: 0.08;
+}
+
+.gameTitle {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: var(--type-caption);
+  color: var(--muted);
+  line-height: 1.35;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  transition: color 200ms ease;
+}
+
+.gameBlock:hover .gameTitle {
+  color: var(--ink);
+}
+
+.emptyLine {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: clamp(0.85rem, 1.1vw, 0.95rem);
+  color: var(--muted);
+  margin-top: clamp(0.75rem, 1.2vw, 1rem);
+}
+
+/* ── Reviews section ── */
+.reviewsSection {
+  background: var(--surface);
+  padding-bottom: clamp(5rem, 9vw, 8rem);
+}
+
+.reviewsInner {
+  padding-inline: var(--gutter);
+}
+
+.reviewsTitle {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--type-section-head);
+  line-height: 0.88;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-transform: uppercase;
+  border-top: 1px solid var(--rule);
+  padding-top: clamp(2.75rem, 4.5vw, 4rem);
+  margin-bottom: clamp(0.25rem, 0.5vw, 0.5rem);
+}
+
+.reviewsList {
+  display: flex;
+  flex-direction: column;
+}
+
+.reviewItem {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: clamp(1.25rem, 2.5vw, 2.5rem);
+  align-items: start;
+  padding-block: clamp(2rem, 3.5vw, 2.75rem);
+  border-top: 1px solid var(--rule);
+}
+
+/* ── Review thumbnail (link) ── */
+.reviewThumbWrap {
+  display: block;
+  position: relative;
+  width: clamp(52px, 6vw, 80px);
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  flex-shrink: 0;
+}
+
+.reviewThumb {
+  filter: grayscale(60%) contrast(1.15);
+}
+
+/* ── Review body (clickable link to discussion) ── */
+.reviewBody {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.5rem, 0.9vw, 0.75rem);
+  text-decoration: none;
+  color: inherit;
+  min-width: 0;
+}
+
+.reviewBody:hover .reviewGameTitle {
+  opacity: 0.7;
+}
+
+/* ── Review meta column ── */
+.reviewMeta {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.4rem, 0.8vw, 0.65rem);
+  padding-top: 0.08em;
+}
+
+.reviewGameTitle {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(1rem, 1.6vw, 1.4rem);
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-transform: uppercase;
+  line-height: 0.92;
+  text-wrap: balance;
+}
+
+.reviewRating {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.reviewDelete {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: calc(var(--type-caption) * 0.88);
+  color: oklch(0.40 0.010 330);
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color 180ms ease;
+  text-align: left;
+}
+
+.reviewDelete:hover {
+  color: oklch(0.65 0.18 25);
+}
+
+.reviewDelete:focus-visible {
+  outline: 2px solid oklch(0.65 0.18 25 / 0.5);
+  outline-offset: 3px;
+}
+
+/* ── Review text ── */
+.reviewText {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: clamp(0.9rem, 1.25vw, 1.05rem);
+  color: var(--muted);
+  line-height: 1.72;
+  max-width: 60ch;
+  text-wrap: pretty;
+  padding-top: 0.1em;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .profileHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(1.5rem, 3vw, 2.25rem);
+  }
+
+  .avatarWrap {
+    width: clamp(88px, 20vw, 148px);
+  }
+
+  .reviewItem {
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas: "thumb body delete";
+  }
+
+  .reviewThumbWrap {
+    grid-area: thumb;
+  }
+
+  .reviewBody {
+    grid-area: body;
+  }
+
+  .reviewDelete {
+    grid-area: delete;
+  }
+
+  .reviewText {
+    max-width: 100%;
+    padding-top: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .gamesRow {
+    grid-template-columns: repeat(5, min(38vw, 140px));
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 0.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--rule) transparent;
+    gap: clamp(0.5rem, 2vw, 0.75rem);
+  }
+
+  .gameBlock {
+    scroll-snap-align: start;
+  }
+
+  .profileTopRow {
+    gap: 0.85rem;
+  }
+}
+
+@media (max-width: 440px) {
+  .profileTopRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .reviewItem {
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      "thumb delete"
+      "body  body";
+    gap: 1rem;
+  }
+
+  .reviewThumbWrap {
+    grid-area: thumb;
+  }
+
+  .reviewBody {
+    grid-area: body;
+  }
+
+  .reviewDelete {
+    grid-area: delete;
+    justify-self: end;
+  }
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .avatar,
+  .gameCover,
+  .gameCoverOverlay,
+  .avatarOverlay,
+  .editBtn,
+  .viewMore,
+  .gameTitle,
+  .navLink,
+  .reviewDelete {
+    transition: none !important;
+  }
+
+  .gameBlock:hover .gameCover {
+    transform: none;
+  }
+}

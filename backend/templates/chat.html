@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <div id="chat-box"></div>
+    <div id="input-area">
+        <input type="text" id="user-input" placeholder="Ask anything (clears on refresh)..." onkeydown="if(event.key==='Enter') sendMessage()">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        const chatBox = document.getElementById('chat-box');
+
+        let inSessionHistory = [];
+
+        async function sendMessage() {
+            const input = document.getElementById('user-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            input.value = '';
+            appendMessage(text, 'user');
+
+            inSessionHistory.push({ role: 'user', content: text });
+
+            const botDiv = appendMessage('Thinking...', 'assistant');
+
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ messages: inSessionHistory })
+                });
+
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let fullResponseText = '';
+
+                while (true) {
+                    const { value, done } = await reader.read();
+                    if (done) break;
+
+                    const chunkStr = decoder.decode(value);
+                    const lines = chunkStr.split('\n');
+
+                    for (const line of lines) {
+                        if (line.startsWith('data: ')) {
+                            const dataStr = line.slice(6).trim();
+                            if (dataStr === '[DONE]') break;
+
+                            const parsed = JSON.parse(dataStr);
+                            fullResponseText += parsed.content;
+                            
+                            botDiv.innerText = fullResponseText;
+                            chatBox.scrollTop = chatBox.scrollHeight;
+                        }
+                    }
+                }
+
+                inSessionHistory.push({ role: 'assistant', content: fullResponseText });
+
+            } catch (error) {
+                botDiv.innerText = "Error: Failed to fetch stream from local Flask application.";
+            }
+        }
+
+        function appendMessage(text, role) {
+            const div = document.createElement('div');
+            div.className = `msg ${role}`;
+            div.innerText = text;
+            chatBox.appendChild(div);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            return div;
+        }
+    </script>
+{% endblock %}
+
+<!--
+    NOTE: As we are properly learning Javascript in week 3 (when we will be using gen-AI for the frontend) and I'm working on this in week 2,
+    I have taken the liberty of using some gen-AI in this file to make a baseline front-end for the purposes of checking the link between the frontend and backend,
+    plus this will make the lives of my team much easier when they have to work on their individual frontends...
+-->

@@ -1,0 +1,244 @@
+/* ─────────────────────────────────────────
+   CheckPoint — 404 Not Found
+   Ghost game-detail shell
+   ───────────────────────────────────────── */
+
+/* ── Page shell ── */
+.page {
+  position: relative;
+  min-height: 100svh;
+  background: var(--bg);
+}
+
+/* ── Hero ── */
+.hero {
+  display: grid;
+  grid-template-columns: min(36vw, 400px) 1fr;
+  gap: clamp(2.5rem, 5vw, 6rem);
+  align-items: start;
+  padding-top: clamp(7rem, 12vw, 9.5rem);
+  padding-bottom: clamp(3.5rem, 5.5vw, 5.5rem);
+  padding-inline: var(--gutter);
+  border-bottom: 1px solid var(--rule);
+}
+
+/* ── Cover slot ── */
+.coverSlot {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.coverBox {
+  aspect-ratio: 3 / 4;
+  width: 100%;
+  border: 1px solid var(--rule);
+  background: var(--bg);
+}
+
+.coverLabel {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+/* ── Meta column ── */
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 1.6vw, 1.4rem);
+  padding-top: clamp(0.5rem, 1.5vw, 1.25rem);
+}
+
+.errorCode {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--type-page-title);
+  line-height: 0.88;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-transform: uppercase;
+  text-wrap: balance;
+  text-shadow:
+    3px 3px 0 oklch(0.52 0.155 328 / 0.55),
+    -1px -1px 0 oklch(0.75 0.150 68 / 0.40);
+}
+
+.divider {
+  height: 1px;
+  background: var(--rule);
+  flex-shrink: 0;
+}
+
+.subtext {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: var(--type-body);
+  color: var(--muted);
+  line-height: 1.65;
+  text-wrap: pretty;
+}
+
+/* ── Empty rating dots ── */
+.ratingDots {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  background: var(--rule);
+}
+
+/* ── CTA ── */
+.cta {
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  transition: color 180ms ease;
+}
+
+.cta:hover {
+  color: oklch(0.85 0.130 68);
+}
+
+.cta:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* ── Reviews section ── */
+.reviewsSection {
+  background: var(--surface);
+  border-bottom: 1px solid var(--rule);
+}
+
+.reviewsInner {
+  padding-inline: var(--gutter);
+  padding-bottom: clamp(4rem, 7vw, 7rem);
+}
+
+.reviewsHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: clamp(2.75rem, 4.5vw, 4rem);
+}
+
+.reviewsTitle {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--type-section-head);
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-transform: uppercase;
+}
+
+.reviewsCount {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--type-section-head);
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  color: var(--rule);
+}
+
+/* ── Ghost review rows ── */
+.reviewsList {
+  display: flex;
+  flex-direction: column;
+}
+
+.reviewItem {
+  display: grid;
+  grid-template-columns: clamp(9rem, 14vw, 14rem) 1fr;
+  gap: clamp(1.5rem, 3vw, 3rem);
+  align-items: start;
+  padding-block: clamp(2rem, 3.5vw, 2.75rem);
+  border-top: 1px solid var(--rule);
+}
+
+.reviewLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding-top: 0.1em;
+}
+
+.ghostMeta {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.reviewRight {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding-top: 0.1em;
+}
+
+.ghostLine {
+  font-family: var(--font-body);
+  font-size: var(--type-body);
+  color: var(--ink);
+  opacity: 0.22;
+  line-height: 1.72;
+  letter-spacing: 0.02em;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: 1fr;
+    gap: clamp(1.75rem, 4vw, 2.5rem);
+  }
+
+  .coverSlot {
+    max-width: min(55vw, 280px);
+  }
+
+  .meta {
+    padding-top: 0;
+  }
+}
+
+@media (max-width: 680px) {
+  .reviewItem {
+    grid-template-columns: 1fr;
+    gap: clamp(0.75rem, 2vw, 1rem);
+  }
+}
+
+@media (max-width: 440px) {
+  .coverSlot {
+    max-width: min(65vw, 220px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta {
+    transition: none !important;
+  }
+}

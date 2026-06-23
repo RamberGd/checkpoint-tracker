@@ -1,0 +1,58 @@
+/* Both elements are fixed, pointer-events: none, centered via negative margin */
+.dot,
+.ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 200ms ease;
+  will-change: transform;
+}
+
+.dot.visible,
+.ring.visible {
+  opacity: 1;
+}
+
+/* Crosshair dot — echoes the crop marks vocabulary */
+.dot {
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+}
+
+.dot::before,
+.dot::after {
+  content: "";
+  position: absolute;
+  background: var(--ink);
+}
+
+/* horizontal bar */
+.dot::before {
+  width: 12px;
+  height: 1px;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+}
+
+/* vertical bar */
+.dot::after {
+  width: 1px;
+  height: 12px;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+}
+
+/* Lagging ring */
+.ring {
+  width: 32px;
+  height: 32px;
+  margin: -16px 0 0 -16px;
+  border-radius: 50%;
+  border: 1px solid oklch(0.93 0.012 330 / 0.35);
+}

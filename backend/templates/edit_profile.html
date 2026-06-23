@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ user.username }}'s profile</title>
+</head>
+<body>
+    {% if user.profile_pic %}
+    <img src="{{ url_for('static', filename='uploads/' + user.profile_pic) }}" width="200" height="200">
+    {% else %}
+    <img src="{{ url_for('static', filename='images/fallback_avatar.png') }}" width="200" height="200">
+    {% endif %}
+
+
+    <form method="POST" action="{{ url_for('edit_profile') }}" enctype="multipart/form-data">
+        <input type="text" name="username" value="{{ user.username }}" placeholder="Username">
+        <input type="file" name="profile_pic">
+        <button type="submit">Save Changes</button>
+    </form>
+    {% for message in get_flashed_messages() %}
+        <p>{{ message }}</p>
+    {% endfor %}
+</body>

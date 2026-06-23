@@ -1,0 +1,213 @@
+/* ─────────────────────────────────────────
+   CheckPoint — Played Games Page
+   Contact-sheet archive · Cinematic dark
+   ───────────────────────────────────────── */
+
+/* ── Page shell ── */
+.page {
+  position: relative;
+  min-height: 100svh;
+  background: var(--bg);
+}
+
+/* ── Header ── */
+.header {
+  padding-top: clamp(6.5rem, 11vw, 9.5rem);
+  padding-inline: var(--gutter);
+  padding-bottom: 0;
+}
+
+.headerInner {
+  display: flex;
+  align-items: baseline;
+  gap: clamp(1.5rem, 3vw, 3rem);
+  flex-wrap: wrap;
+  margin-bottom: clamp(1.5rem, 2.5vw, 2.25rem);
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--type-page-title);
+  line-height: 0.88;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  text-transform: uppercase;
+  text-wrap: balance;
+  text-shadow:
+    3px 3px 0 oklch(0.52 0.155 328 / 0.55),
+    -1px -1px 0 oklch(0.75 0.150 68 / 0.28);
+}
+
+.count {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  padding-bottom: 0.22em;
+  display: flex;
+  align-items: center;
+  gap: 0.55em;
+}
+
+.countDash {
+  color: var(--accent);
+}
+
+.rule {
+  height: 1px;
+  background: var(--rule);
+}
+
+/* ── Main grid ── */
+.main {
+  padding-inline: var(--gutter);
+  padding-top: clamp(2rem, 3.5vw, 3rem);
+  padding-bottom: clamp(5rem, 9vw, 8rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 1.8vw, 1.5rem);
+}
+
+/* ── Row ── */
+.row {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: clamp(0.65rem, 1.2vw, 1.1rem);
+}
+
+/* ── Game block ── */
+.gameBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.gameBlock:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 1px;
+}
+
+/* ── Cover ── */
+.coverWrap {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  isolation: isolate;
+  background: var(--surface);
+}
+
+.cover {
+  filter: grayscale(70%) contrast(1.18);
+  transition:
+    filter 0.55s var(--ease-out-expo),
+    transform 0.55s var(--ease-out-expo);
+}
+
+.gameBlock:hover .cover {
+  filter: grayscale(15%) contrast(1.06);
+  transform: scale(1.06);
+}
+
+.coverOverlay {
+  position: absolute;
+  inset: 0;
+  background: var(--primary);
+  mix-blend-mode: color;
+  opacity: 0.30;
+  pointer-events: none;
+  transition: opacity 0.55s var(--ease-out-expo);
+}
+
+.gameBlock:hover .coverOverlay {
+  opacity: 0.06;
+}
+
+/* ── Game title ── */
+.title {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: var(--type-caption);
+  color: var(--muted);
+  line-height: 1.35;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  transition: color 200ms ease;
+}
+
+.gameBlock:hover .title {
+  color: var(--ink);
+}
+
+/* ── Footer ── */
+.footer {
+  padding-inline: var(--gutter);
+  padding-bottom: clamp(3rem, 5vw, 4.5rem);
+  border-top: 1px solid var(--rule);
+  padding-top: clamp(1.5rem, 2.5vw, 2rem);
+}
+
+.backLink {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  transition: color 180ms ease;
+}
+
+.backLink:hover {
+  color: var(--ink);
+}
+
+.backLink:focus-visible {
+  outline: 2px solid var(--muted);
+  outline-offset: 3px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+  .row {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .row {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 660px) {
+  .row {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 420px) {
+  .row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .cover,
+  .coverOverlay,
+  .title,
+  .backLink {
+    transition: none !important;
+  }
+
+  .gameBlock:hover .cover {
+    transform: none;
+  }
+}
