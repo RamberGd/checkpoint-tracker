@@ -432,7 +432,7 @@
   display: inline-block;
   font-family: var(--font-mono);
   font-size: calc(var(--type-caption) * 0.88);
-  color: oklch(0.40 0.010 330);
+  color: oklch(0.58 0.015 330);
   text-transform: uppercase;
   letter-spacing: 0.10em;
   background: none;
@@ -443,7 +443,8 @@
   text-align: left;
 }
 
-.reviewDelete:hover {
+.reviewDelete:hover,
+.reviewDeleteConfirm {
   color: oklch(0.65 0.18 25);
 }
 
@@ -457,7 +458,7 @@
   font-family: var(--font-body);
   font-style: italic;
   font-size: clamp(0.9rem, 1.25vw, 1.05rem);
-  color: var(--muted);
+  color: oklch(0.72 0.012 330);
   line-height: 1.72;
   max-width: 60ch;
   text-wrap: pretty;

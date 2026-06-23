@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Reveal from "../components/Reveal";
@@ -75,6 +75,8 @@ export default function ProfilePage() {
   const router = useRouter();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [confirmingDelete, setConfirmingDelete] = useState<number | null>(null);
+  const deleteTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Load the real profile (identity, shortlists, reviews) on mount. A 401 means
   // the session expired / never existed, so we send the user to log in.
@@ -100,8 +102,17 @@ export default function ProfilePage() {
     };
   }, [router]);
 
-  // Delete a review the user owns, then drop it from local state and the count.
+  // Delete a review the user owns. First click arms the confirm state;
+  // second click within 2.5 s actually deletes.
   async function handleDeleteReview(reviewId: number) {
+    if (confirmingDelete !== reviewId) {
+      setConfirmingDelete(reviewId);
+      if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current);
+      deleteTimerRef.current = setTimeout(() => setConfirmingDelete(null), 2500);
+      return;
+    }
+    if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current);
+    setConfirmingDelete(null);
     try {
       await api.deleteReview(reviewId);
       setProfile((prev) =>
@@ -244,11 +255,11 @@ export default function ProfilePage() {
                         <p className={styles.reviewText}>{r.comment}</p>
                       </a>
                       <button
-                        className={styles.reviewDelete}
+                        className={`${styles.reviewDelete}${confirmingDelete === r.id ? ` ${styles.reviewDeleteConfirm}` : ""}`}
                         onClick={() => handleDeleteReview(r.id)}
-                        aria-label={`Delete review of ${r.gameTitle}`}
+                        aria-label={confirmingDelete === r.id ? `Confirm delete review of ${r.gameTitle}` : `Delete review of ${r.gameTitle}`}
                       >
-                        Delete
+                        {confirmingDelete === r.id ? "Confirm?" : "Delete"}
                       </button>
                     </article>
                   </Reveal>
