@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Reveal from "../../components/Reveal";
 import Navbar from "../../components/Navbar";
@@ -32,6 +32,10 @@ export default function DiscussionPage() {
   const [loading, setLoading] = useState(true);
   const [replyText, setReplyText] = useState("");
   const [submitState, setSubmitState] = useState<SubmitState>("idle");
+  const [confirmReview, setConfirmReview] = useState(false);
+  const [confirmingReply, setConfirmingReply] = useState<number | null>(null);
+  const reviewDeleteTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const replyDeleteTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Load the featured review plus its reply thread.
   useEffect(() => {
@@ -68,6 +72,14 @@ export default function DiscussionPage() {
   }
 
   async function deleteReply(id: number) {
+    if (confirmingReply !== id) {
+      setConfirmingReply(id);
+      if (replyDeleteTimerRef.current) clearTimeout(replyDeleteTimerRef.current);
+      replyDeleteTimerRef.current = setTimeout(() => setConfirmingReply(null), 2500);
+      return;
+    }
+    if (replyDeleteTimerRef.current) clearTimeout(replyDeleteTimerRef.current);
+    setConfirmingReply(null);
     try {
       await api.deleteReply(id);
       setData((prev) =>
@@ -81,6 +93,14 @@ export default function DiscussionPage() {
   // Deleting the featured review removes the thread, so return to the game page.
   async function deleteReview() {
     if (!data) return;
+    if (!confirmReview) {
+      setConfirmReview(true);
+      if (reviewDeleteTimerRef.current) clearTimeout(reviewDeleteTimerRef.current);
+      reviewDeleteTimerRef.current = setTimeout(() => setConfirmReview(false), 2500);
+      return;
+    }
+    if (reviewDeleteTimerRef.current) clearTimeout(reviewDeleteTimerRef.current);
+    setConfirmReview(false);
     try {
       await api.deleteReview(data.review.id);
       router.push(`/game/${data.review.gameId}`);
@@ -145,11 +165,11 @@ export default function DiscussionPage() {
               </blockquote>
               {review.isOwn && (
                 <button
-                  className={styles.deleteBtn}
+                  className={`${styles.deleteBtn}${confirmReview ? ` ${styles.deleteBtnConfirm}` : ""}`}
                   onClick={deleteReview}
-                  aria-label="Delete your review"
+                  aria-label={confirmReview ? "Confirm delete your review" : "Delete your review"}
                 >
-                  Delete review
+                  {confirmReview ? "Confirm?" : "Delete review"}
                 </button>
               )}
             </article>
@@ -172,10 +192,10 @@ export default function DiscussionPage() {
                 <p className={styles.emptyState}>No replies yet. Start the conversation.</p>
               </Reveal>
             ) : (
-              <div className={styles.repliesList} role="list">
+              <div className={styles.repliesList}>
                 {replies.map((reply, i) => (
                   <Reveal key={reply.id} delay={i * 70}>
-                    <article className={styles.replyItem} role="listitem">
+                    <article className={styles.replyItem}>
                       <div className={styles.replyLeft}>
                         <span className={styles.replyUsername}>
                           <span className={styles.replyAt}>@</span>
@@ -183,11 +203,11 @@ export default function DiscussionPage() {
                         </span>
                         {reply.isOwn && (
                           <button
-                            className={styles.deleteBtn}
+                            className={`${styles.deleteBtn}${confirmingReply === reply.id ? ` ${styles.deleteBtnConfirm}` : ""}`}
                             onClick={() => deleteReply(reply.id)}
-                            aria-label="Delete your reply"
+                            aria-label={confirmingReply === reply.id ? "Confirm delete your reply" : "Delete your reply"}
                           >
-                            Delete
+                            {confirmingReply === reply.id ? "Confirm?" : "Delete"}
                           </button>
                         )}
                       </div>
