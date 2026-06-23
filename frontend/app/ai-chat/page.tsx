@@ -217,12 +217,6 @@ export default function AiChatPage() {
 
   const isInputDisabled = phase === "thinking" || phase === "responding";
 
-  const handleOracleClick = useCallback(() => {
-    if (!isInputDisabled) {
-      textareaRef.current?.focus();
-    }
-  }, [isInputDisabled]);
-
   const labelClass = [
     styles.oracleLabel,
     isInputDisabled ? styles.oracleLabelPulse : "",
@@ -247,11 +241,20 @@ export default function AiChatPage() {
       {/* ── Oracle zone ── */}
       <main
         ref={oracleRef}
-        className={`${styles.oracle}${!isInputDisabled ? ` ${styles.oracleClickable}` : ""}`}
-        onClick={handleOracleClick}
+        className={styles.oracle}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
+        {/* Visually-hidden live region — announced by screen readers as the response streams in */}
+        <div
+          aria-live="polite"
+          aria-atomic="false"
+          style={{ position: "absolute", width: 1, height: 1, padding: 0, margin: -1, overflow: "hidden", clip: "rect(0,0,0,0)", whiteSpace: "nowrap", border: 0 }}
+        >
+          {phase === "thinking" && userQuery}
+          {(phase === "responding" || phase === "done") && currentResponse}
+          {phase === "error" && (errorText || "Something went wrong.")}
+        </div>
         <div className={styles.oracleInner}>
           <div className={styles.oracleLabelRow}>
             <div className={labelClass}>CHECKPOINT/AI</div>
