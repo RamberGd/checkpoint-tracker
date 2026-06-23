@@ -28,6 +28,9 @@ export default function EditProfilePage() {
   const fileRef = useRef<HTMLInputElement>(null);
   // Tracks the last-saved username so isDirty stays accurate after saves.
   const savedUsernameRef = useRef("");
+  // Focus management for the discard dialog
+  const discardFirstBtnRef = useRef<HTMLButtonElement>(null);
+  const beforeDiscardFocusRef = useRef<HTMLElement | null>(null);
 
   // Prefill from the authenticated user once the session has bootstrapped.
   useEffect(() => {
@@ -69,6 +72,18 @@ export default function EditProfilePage() {
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
+  }, [showDiscard]);
+
+  // Move focus into the discard dialog on open; restore it on close.
+  useEffect(() => {
+    if (showDiscard) {
+      beforeDiscardFocusRef.current = document.activeElement as HTMLElement;
+      const t = setTimeout(() => discardFirstBtnRef.current?.focus(), 0);
+      return () => clearTimeout(t);
+    } else {
+      beforeDiscardFocusRef.current?.focus();
+      beforeDiscardFocusRef.current = null;
+    }
   }, [showDiscard]);
 
   function handleBackClick(e: React.MouseEvent<HTMLAnchorElement>) {
@@ -266,6 +281,7 @@ export default function EditProfilePage() {
             <p className={styles.discardSub}>Your edits will be lost.</p>
             <div className={styles.discardActions}>
               <button
+                ref={discardFirstBtnRef}
                 type="button"
                 className={styles.discardCancelBtn}
                 onClick={() => setShowDiscard(false)}
