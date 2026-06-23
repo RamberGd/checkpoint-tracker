@@ -56,3 +56,8 @@
 .navLinkActive:hover {
   color: var(--accent);
 }
+
+@media (max-width: 640px) {
+  .navAuthSecondary { display: none; }
+  .navMetaSecondary { display: none; }
+}
