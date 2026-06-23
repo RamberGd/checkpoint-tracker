@@ -612,6 +612,31 @@
     opacity: 1;
     transform: none;
   }
+
+  /* Without GSAP, Panel B stays off-screen at x:100vw inside an overflow:hidden
+     stage. Stack panels vertically so all content is reachable without scroll-jacking. */
+  .introDriver {
+    height: auto;
+  }
+
+  .introStage {
+    position: static;
+    height: auto;
+    overflow: visible;
+  }
+
+  .introTrack {
+    display: block;
+    width: 100%;
+    height: auto;
+    will-change: auto;
+  }
+
+  .introPanel {
+    width: 100%;
+    height: auto;
+    min-height: 100svh;
+  }
 }
 
 /* ── Responsive ── */
