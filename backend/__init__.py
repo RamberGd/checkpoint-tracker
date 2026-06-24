@@ -31,6 +31,7 @@ os.makedirs(instance_dir, exist_ok=True)
 _db_url = os.getenv('DATABASE_URL', 'sqlite:///' + os.path.join(instance_dir, 'database.db'))
 if _db_url.startswith('postgres://'):
     _db_url = _db_url.replace('postgres://', 'postgresql://', 1)
+_db_url = _db_url.replace('&channel_binding=require', '').replace('?channel_binding=require&', '?').replace('?channel_binding=require', '')
 app.config['SQLALCHEMY_DATABASE_URI'] = _db_url
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
