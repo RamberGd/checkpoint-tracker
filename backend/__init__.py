@@ -34,6 +34,7 @@ if _db_url.startswith('postgres://'):
 _db_url = _db_url.replace('&channel_binding=require', '').replace('?channel_binding=require&', '?').replace('?channel_binding=require', '')
 app.config['SQLALCHEMY_DATABASE_URI'] = _db_url
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_pre_ping': True}
 
 db.init_app(app)
 bcrypt = Bcrypt(app)
@@ -113,7 +114,7 @@ def signup():
     if form.validate_on_submit():
         #hashing the user's password before storing into the database
         try:
-            hashed_password = bcrypt.generate_password_hash(form.password.data)
+            hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
             new_user = User(username = form.username.data, email = form.email.data, password=hashed_password)
             db.session.add(new_user)
             db.session.commit()

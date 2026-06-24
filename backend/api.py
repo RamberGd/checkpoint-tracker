@@ -195,7 +195,7 @@ def signup():
         return jsonify({"error": "Please fix the highlighted fields.", "fields": fields}), 400
 
     try:
-        hashed = generate_password_hash(form.password.data)
+        hashed = generate_password_hash(form.password.data).decode('utf-8')
         user = User(username=form.username.data, email=form.email.data, password=hashed)
         db.session.add(user)
         db.session.commit()
