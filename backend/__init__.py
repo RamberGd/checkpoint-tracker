@@ -1,6 +1,6 @@
 from flask import Flask, render_template, url_for, redirect, request, Response, jsonify, flash
 from flask_login import login_user, logout_user, login_required, current_user
-from backend.extensions import db, login_manager
+from backend.extensions import db, login_manager, limiter
 from flask_bcrypt import Bcrypt
 from sqlalchemy import or_
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
@@ -43,7 +43,7 @@ cloudinary.config(from_url=os.environ.get("CLOUDINARY_URL", ""))
 # JSON API consumed by the Next.js frontend (parallel to the HTML routes).
 # Registered as a blueprint under /api; see backend/api.py for the rationale.
 app.register_blueprint(api_blueprint)
-
+limiter.init_app(app)
 # create tables on startup if not running tests
 with app.app_context():
     if not app.config.get('TESTING'):
