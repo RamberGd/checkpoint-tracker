@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 // Backend (Flask) origin. Defaults to the local dev server on :5000.
 // Overridable so the same build can point at a deployed backend later.
@@ -6,6 +7,11 @@ const BACKEND_ORIGIN =
   process.env.BACKEND_ORIGIN ?? "http://localhost:5000";
 
 const nextConfig: NextConfig = {
+  turbopack: {
+    // Pin workspace root to this package, not the parent group-24/ directory
+    // which has a Playwright package.json that confuses module resolution.
+    root: path.resolve(__dirname),
+  },
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com" },
