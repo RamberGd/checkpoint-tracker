@@ -468,13 +468,12 @@
 /* ── Responsive ── */
 @media (max-width: 900px) {
   .profileHeader {
-    flex-direction: column;
     align-items: flex-start;
-    gap: clamp(1.5rem, 3vw, 2.25rem);
+    gap: clamp(1.25rem, 3vw, 2.25rem);
   }
 
   .avatarWrap {
-    width: clamp(88px, 20vw, 148px);
+    width: clamp(80px, 14vw, 120px);
   }
 
   .reviewItem {
@@ -501,6 +500,15 @@
 }
 
 @media (max-width: 640px) {
+  .avatarWrap {
+    width: clamp(68px, 18vw, 88px);
+  }
+
+  .username {
+    font-size: clamp(1.75rem, 6.5vw, 3rem);
+    overflow-wrap: break-word;
+  }
+
   .gamesRow {
     grid-template-columns: repeat(5, min(38vw, 140px));
     overflow-x: auto;
