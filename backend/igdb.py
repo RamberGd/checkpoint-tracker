@@ -92,8 +92,9 @@ def search_games(query: str, limit: int = 30, offset: int = 0) -> list[dict[str,
         A list of dictionaries containing game data (name, summary, cover URL, 
         genres, and release date). Returns an empty list if the request fails.
     """
-    # escaping double quotes to prevent syntax breaks
-    clean_query = query.replace('"', '\\"')
+    # escaping backslashes first, then double quotes, to prevent Apicalypse query
+    # injection (a lone backslash could otherwise escape our escaping)
+    clean_query = query.replace('\\', '\\\\').replace('"', '\\"')
     
     # getting the necessary access token for authentication
     token = get_token(CLIENT_ID, CLIENT_SECRET)

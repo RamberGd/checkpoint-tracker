@@ -51,6 +51,10 @@ package_dir = os.path.dirname(__file__)
 # ITAD shop ids the frontend price grid expects, in display order.
 ITAD_SHOPS = [("Steam", 61), ("GOG", 35), ("Epic Games", 16)]
 
+# M2: upper bound on free-text review/reply comments (defence in depth alongside
+# the app-wide MAX_CONTENT_LENGTH cap on the whole request body).
+MAX_COMMENT_LENGTH = 2000
+
 
 # ── Auth gate: JSON for the API, redirect for the HTML app ────────────
 @login_manager.unauthorized_handler
@@ -420,14 +424,18 @@ def prices(game_id: int):
 
     deals_by_shop_id: dict = {}
     try:
+        # M4: pass query values via params= so requests URL-encodes the title (and
+        # key) instead of interpolating untrusted text directly into the URL.
         search_res = requests.get(
-            f"https://api.isthereanydeal.com/games/search/v1?key={key}&title={record.title}",
+            "https://api.isthereanydeal.com/games/search/v1",
+            params={"key": key, "title": record.title},
             timeout=10,
         )
         matches = [g for g in search_res.json() if g.get("type") == "game"]
         if matches:
             price_res = requests.post(
-                f"https://api.isthereanydeal.com/games/prices/v3?key={key}&country=US&shops=61,35,16",
+                "https://api.isthereanydeal.com/games/prices/v3",
+                params={"key": key, "country": "US", "shops": "61,35,16"},
                 json=[matches[0]["id"]],
                 timeout=10,
             )
@@ -536,6 +544,8 @@ def add_review(game_id: int):
     if not (1 <= rating <= 5):
         return jsonify({"error": "Rating must be between 1 and 5."}), 400
     comment = (data.get("comment") or "").strip()
+    if len(comment) > MAX_COMMENT_LENGTH:
+        return jsonify({"error": f"Review is too long (max {MAX_COMMENT_LENGTH} characters)."}), 400
 
     review = Review(user_id=current_user.id, game_id=record.igdb_id, comment=comment, rating=rating)
     db.session.add(review)
@@ -610,6 +620,8 @@ def add_reply(review_id: int):
     comment = (data.get("comment") or "").strip()
     if not comment:
         return jsonify({"error": "Reply content missing"}), 400
+    if len(comment) > MAX_COMMENT_LENGTH:
+        return jsonify({"error": f"Reply is too long (max {MAX_COMMENT_LENGTH} characters)."}), 400
 
     reply = ReplyToReview(review_id=review_id, user_id=current_user.id, comment=comment)
     db.session.add(reply)

@@ -19,9 +19,9 @@ class Signup(FlaskForm):
     """
     username = StringField(validators=[InputRequired(message="All fields are required"), Length(min=2, max=20)], render_kw={"placeholder": "Username"})
     email = EmailField(validators=[InputRequired(message="All fields are required"), Length(min=2, max=120)],render_kw={"placeholder": "E-mail"})
-    password = PasswordField(validators=[InputRequired(message="All fields are required"), Length(min=2, max=20)],
+    password = PasswordField(validators=[InputRequired(message="All fields are required"), Length(min=8, max=128, message="Password must be at least 8 characters")],
                            render_kw={"placeholder": "Password"})
-    confirm = PasswordField(validators=[InputRequired(message="All fields are required"), Length(min=2, max=20)], render_kw={"placeholder": "Confirm Password"})
+    confirm = PasswordField(validators=[InputRequired(message="All fields are required"), Length(min=8, max=128, message="Password must be at least 8 characters")], render_kw={"placeholder": "Confirm Password"})
 
 
     def validate_confirm(self, confirm)-> None:
@@ -81,7 +81,7 @@ class LoginForm(FlaskForm):
         validators=[InputRequired(), Length(min=2, max=120)],
         render_kw={"placeholder": "Log in via Username or E-mail"}
     )
-    password = PasswordField(validators=[InputRequired(), Length(min=2, max=20)],
+    password = PasswordField(validators=[InputRequired(), Length(min=8, max=128)],
                            render_kw={"placeholder": "Password"})
 
     submit = SubmitField("Log in")

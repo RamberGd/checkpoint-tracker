@@ -33,8 +33,45 @@ if _db_url.startswith('postgres://'):
     _db_url = _db_url.replace('postgres://', 'postgresql://', 1)
 _db_url = _db_url.replace('&channel_binding=require', '').replace('?channel_binding=require&', '?').replace('?channel_binding=require', '')
 app.config['SQLALCHEMY_DATABASE_URI'] = _db_url
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+
+# H2: never boot with a missing signing key. A None SECRET_KEY silently breaks
+# session-cookie integrity instead of failing loudly, so we refuse to start
+# without one. The test suite binds an in-memory SQLite DB before import and may
+# not load a .env, so a fixed insecure key is allowed *only* in that case.
+_is_testing = _db_url == 'sqlite:///:memory:'
+_secret_key = os.getenv('SECRET_KEY')
+if not _secret_key:
+    if _is_testing:
+        _secret_key = 'test-only-insecure-secret-key'
+    else:
+        raise RuntimeError(
+            "SECRET_KEY environment variable must be set; refusing to start with an "
+            "unsigned session key."
+        )
+app.config['SECRET_KEY'] = _secret_key
+
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_pre_ping': True}
+
+# H1: harden the session/remember cookies. SameSite=Lax stops the browser from
+# attaching the session cookie to cross-site POSTs, which closes the CSRF hole on
+# the state-changing routes (all of which are POST). HttpOnly keeps the cookie out
+# of JavaScript. Secure is enabled in production (HTTPS) via the SESSION_COOKIE_SECURE
+# env var and left off for local HTTP dev so the cookie still flows over http://localhost.
+_secure_cookies = os.getenv('SESSION_COOKIE_SECURE', 'false').lower() in ('1', 'true', 'yes')
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE='Lax',
+    SESSION_COOKIE_SECURE=_secure_cookies,
+    REMEMBER_COOKIE_HTTPONLY=True,
+    REMEMBER_COOKIE_SAMESITE='Lax',
+    REMEMBER_COOKIE_SECURE=_secure_cookies,
+)
+
+# M2: cap request bodies to mitigate memory-exhaustion DoS via oversized uploads
+# or payloads (avatars stream straight to Cloudinary; comments are unbounded Text).
+app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  # 5 MB
+# M2: upper bound on free-text review/reply comments, enforced in the routes below.
+MAX_COMMENT_LENGTH = 2000
 
 db.init_app(app)
 bcrypt = Bcrypt(app)
@@ -191,6 +228,9 @@ def game(game_id:int):
     if request.method == "POST":
         rating = float(request.form['rating'])
         comment = request.form['comment']
+        if comment and len(comment) > MAX_COMMENT_LENGTH:
+            flash(f'Review is too long (max {MAX_COMMENT_LENGTH} characters).')
+            return redirect(url_for('game', game_id=game_id))
         try:
             review = Review(user_id=current_user.id, game_id=game.igdb_id, comment=comment, rating=rating)
             db.session.add(review)
@@ -258,16 +298,24 @@ def game(game_id:int):
     #return render_template('game.html', game=game, reviews = reviews, avg_rating = avg_rating)
 
     #search ITAD for the game using its title from IGDB and filter out dlcs
-    search_res = requests.get(f"https://api.isthereanydeal.com/games/search/v1?key={os.getenv('ITAD_API_KEY')}&title={game.title}")
+    # M4: pass query values via params= so requests URL-encodes the title (and key)
+    # rather than interpolating untrusted text straight into the URL.
+    search_res = requests.get(
+        "https://api.isthereanydeal.com/games/search/v1",
+        params={"key": os.getenv("ITAD_API_KEY"), "title": game.title},
+        timeout=10,
+    )
     games: list = [g for g in search_res.json() if g["type"] == "game"]
-    
+
     #fetching prices
 
     deals: list = []
     if games:
         price_res = requests.post(
-            f"https://api.isthereanydeal.com/games/prices/v3?key={os.getenv('ITAD_API_KEY')}&country=US&shops=61,35,16",
-            json=[games[0]["id"]]
+            "https://api.isthereanydeal.com/games/prices/v3",
+            params={"key": os.getenv("ITAD_API_KEY"), "country": "US", "shops": "61,35,16"},
+            json=[games[0]["id"]],
+            timeout=10,
         )
         price_data: list = price_res.json()
         deals = price_data[0]["deals"] if price_data else []
@@ -328,6 +376,9 @@ def reply(review_id:int):
         comment = request.form.get('comment')
         if comment is None:
             flash('Reply content missing')
+            return redirect(url_for('discussion', review_id=review_id))
+        if len(comment) > MAX_COMMENT_LENGTH:
+            flash(f'Reply is too long (max {MAX_COMMENT_LENGTH} characters).')
             return redirect(url_for('discussion', review_id=review_id))
 
         new_reply = ReplyToReview(review_id=review_id, user_id=current_user.id, comment=comment)
@@ -632,15 +683,21 @@ def prices(game_id: int):
     game = get_create_game(game_id)
     title = game.title
     
-    search_res = requests.get(f"https://api.isthereanydeal.com/games/search/v1?key={os.getenv('ITAD_API_KEY')}&title={title}")
+    search_res = requests.get(
+        "https://api.isthereanydeal.com/games/search/v1",
+        params={"key": os.getenv("ITAD_API_KEY"), "title": title},
+        timeout=10,
+    )
     games = [g for g in search_res.json() if g["type"] == "game"]
-    
+
     if not games:
         return render_template('game.html', game=game, deals=[], reviews=[], avg_rating=None)
-    
+
     price_res = requests.post(
-        f"https://api.isthereanydeal.com/games/prices/v3?key={os.getenv('ITAD_API_KEY')}&country=US&shops=61,35,16",
-        json=[games[0]["id"]]
+        "https://api.isthereanydeal.com/games/prices/v3",
+        params={"key": os.getenv("ITAD_API_KEY"), "country": "US", "shops": "61,35,16"},
+        json=[games[0]["id"]],
+        timeout=10,
     )
     price_data = price_res.json()
     deals = price_data[0]["deals"] if price_data else []

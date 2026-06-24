@@ -136,6 +136,7 @@ None — `BACKEND_ORIGIN` is already wired in `next.config.ts`. Just set the env
 | `OLLAMA_API_KEY` | From Ollama Cloud |
 | `SEARCH_API_KEY` | From Exa |
 | `CLOUDINARY_URL` | From Cloudinary dashboard |
+| `SESSION_COOKIE_SECURE` | Set to `true` in production (HTTPS) so the session cookie is only sent over TLS. Leave unset/`false` for local HTTP dev. |
 
 ### Frontend (set in Vercel dashboard)
 
