@@ -5,6 +5,8 @@ import { AuthProvider } from "./contexts/auth";
 import { SearchProvider } from "./contexts/search";
 import SearchOverlay from "./components/SearchOverlay";
 import CursorFollow from "./components/CursorFollow";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const barlowCondensed = Barlow_Condensed({
   weight: ["700", "900"],
@@ -51,6 +53,8 @@ export default function RootLayout({
             {children}
           </SearchProvider>
         </AuthProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
