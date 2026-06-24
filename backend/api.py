@@ -40,6 +40,7 @@ from backend.igdb import search_games
 from rapidfuzz import fuzz
 from backend.chatbot import generate_stream
 from backend.deals import get_deals
+from backend.extensions import limiter
 
 api = Blueprint("api", __name__, url_prefix="/api")
 
@@ -147,12 +148,14 @@ def _list_status(game_id: int) -> dict:
 # ── Auth ──────────────────────────────────────────────────────────────
 @api.route("/me", methods=["GET"])
 @login_required
+@limiter.limit("60/minute")
 def me():
     """Session bootstrap: who is logged in (used by the frontend AuthContext)."""
     return jsonify(_me_payload(current_user))
 
 
 @api.route("/login", methods=["POST"])
+@limiter.limit("5/minute, 20/hour", error_message="Too many login attempts. Please try again later.")
 def login():
     """Authenticate by username OR email and start a session.
 
@@ -180,6 +183,7 @@ def login():
 
 
 @api.route("/signup", methods=["POST"])
+@limiter.limit("5/minute, 20/hour", error_message="Too many login attempts. Please try again later.")
 def signup():
     """Register a new account, reusing the Signup form's validators.
 
@@ -218,6 +222,7 @@ def signup():
 
 @api.route("/logout", methods=["POST"])
 @login_required
+@limiter.limit("20/minute, 60/hour")
 def logout():
     logout_user()
     return ("", 204)
@@ -225,6 +230,7 @@ def logout():
 
 @api.route("/profile/edit", methods=["POST"])
 @login_required
+@limiter.limit("10/minute, 40/hour")
 def edit_profile():
     """Update username and/or avatar (multipart form), reusing the HTML rules.
 
@@ -276,6 +282,7 @@ def edit_profile():
 # ── Profile / library lists ───────────────────────────────────────────
 @api.route("/profile", methods=["GET"])
 @login_required
+@limiter.limit("60/minute")
 def profile():
     """The profile page payload: 5-item shortlists per list + all reviews."""
     wishlist = (UserGames.query
@@ -310,6 +317,7 @@ def profile():
 
 @api.route("/lists/<list_kind>", methods=["GET"])
 @login_required
+@limiter.limit("60/minute")
 def get_list(list_kind: str):
     """Full played / wishlist / favourites lists for the dedicated pages.
 
@@ -333,6 +341,7 @@ def get_list(list_kind: str):
 # ── Games ─────────────────────────────────────────────────────────────
 @api.route("/games/search", methods=["GET"])
 @login_required
+@limiter.limit("20/minute")
 def search():
     """Normalize IGDB search results to the SearchOverlay's shape.
 
@@ -375,6 +384,7 @@ def search():
 
 @api.route("/games/<int:game_id>", methods=["GET"])
 @login_required
+@limiter.limit("30/minute")
 def game(game_id: int):
     """Game detail: cached IGDB data + reviews + average + this user's status."""
     record = get_create_game(game_id)  # aborts 404/503 -> JSON via error handlers
@@ -397,6 +407,7 @@ def game(game_id: int):
 
 @api.route("/games/<int:game_id>/prices", methods=["GET"])
 @login_required
+@limiter.limit("30/minute")
 def prices(game_id: int):
     """Current Steam/GOG/Epic prices via ITAD, normalized for the price grid.
 
@@ -459,6 +470,7 @@ def _toggle_response(game_id: int):
 
 
 @api.route("/games/<int:game_id>/played", methods=["POST"])
+@limiter.limit("30/minute")
 @login_required
 def toggle_played(game_id: int):
     """Toggle 'played'. Same semantics as the HTML route: a game lives in one
@@ -477,6 +489,7 @@ def toggle_played(game_id: int):
 
 @api.route("/games/<int:game_id>/wishlist", methods=["POST"])
 @login_required
+@limiter.limit("30/minute")
 def toggle_wishlist(game_id: int):
     get_create_game(game_id)
     item = UserGames.query.filter_by(user_id=current_user.id, game_id=game_id).first()
@@ -492,6 +505,7 @@ def toggle_wishlist(game_id: int):
 
 @api.route("/games/<int:game_id>/favorite", methods=["POST"])
 @login_required
+@limiter.limit("30/minute")
 def toggle_favorite(game_id: int):
     """Toggle 'favourite'. Favourites are played games, so favouriting also
     marks the game played (matching the HTML route)."""
@@ -510,6 +524,7 @@ def toggle_favorite(game_id: int):
 # ── Reviews ───────────────────────────────────────────────────────────
 @api.route("/games/<int:game_id>/reviews", methods=["POST"])
 @login_required
+@limiter.limit("5/minute")
 def add_review(game_id: int):
     """Create a review (one per user per game, rating 1-5)."""
     record = get_create_game(game_id)
@@ -539,6 +554,7 @@ def add_review(game_id: int):
 
 @api.route("/reviews/<int:review_id>", methods=["DELETE"])
 @login_required
+@limiter.limit("10/minute")
 def delete_review(review_id: int):
     """Delete a review you own (replies cascade via the model relationship)."""
     review = Review.query.get_or_404(review_id)
@@ -557,6 +573,7 @@ def delete_review(review_id: int):
 # ── Discussion / replies ──────────────────────────────────────────────
 @api.route("/discussion/<int:review_id>", methods=["GET"])
 @login_required
+@limiter.limit("60/minute")
 def discussion(review_id: int):
     """The featured review plus its reply thread."""
     review = Review.query.get_or_404(review_id)
@@ -585,6 +602,7 @@ def discussion(review_id: int):
 
 @api.route("/reviews/<int:review_id>/replies", methods=["POST"])
 @login_required
+@limiter.limit("10/minute")
 def add_reply(review_id: int):
     """Post a reply on a review's discussion thread."""
     Review.query.get_or_404(review_id)  # 404 if the parent review is gone
@@ -610,6 +628,7 @@ def add_reply(review_id: int):
 
 
 @api.route("/replies/<int:reply_id>", methods=["DELETE"])
+@limiter.limit("20/minute")
 @login_required
 def delete_reply(reply_id: int):
     """Delete a reply you own."""
@@ -628,6 +647,7 @@ def delete_reply(reply_id: int):
 
 # ── Sales ─────────────────────────────────────────────────────────────
 @api.route("/sales", methods=["GET"])
+@limiter.limit("10/minute")
 def sales():
     """Discounted popular games for the sales board.
 
@@ -654,6 +674,7 @@ def sales():
 # ── AI chat (SSE passthrough) ─────────────────────────────────────────
 @api.route("/chat", methods=["POST"])
 @login_required
+@limiter.limit("30/minute")
 def chat():
     """Stream the LLM reply as Server-Sent Events.
 
