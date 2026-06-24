@@ -139,8 +139,13 @@
   grid-auto-rows: 1fr;
 }
 
+.dealList li {
+  display: flex;
+}
+
 /* ── Individual deal row ── */
 .dealRow {
+  flex: 1;
   border-bottom: 1px solid var(--rule);
   position: relative;
   cursor: pointer;
