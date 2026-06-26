@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useSearch } from "../contexts/search";
 import { useAuth } from "../contexts/auth";
+import Dateline from "./Dateline";
 import styles from "./Navbar.module.css";
 
 interface NavbarProps {
@@ -56,15 +57,7 @@ export default function Navbar({ variant = "app" }: NavbarProps) {
         <div className={styles.navMeta}>
           <Link href="/" className={linkClass("/")}>Checkpoint</Link>
           <span className={`${styles.navSep} ${styles.navMetaSecondary}`} aria-hidden="true">·</span>
-          <span className={styles.navMetaSecondary}>Issue 001</span>
-          <span className={`${styles.navSep} ${styles.navMetaSecondary}`} aria-hidden="true">·</span>
-          <span className={styles.navMetaSecondary}>MMXXVI</span>
-          <span className={`${styles.navSep} ${styles.navMetaSecondary}`} aria-hidden="true">·</span>
-          <span className={styles.navMetaSecondary}>Games</span>
-          <span className={`${styles.navSep} ${styles.navMetaSecondary}`} aria-hidden="true">·</span>
-          <span className={styles.navMetaSecondary}>Culture</span>
-          <span className={`${styles.navSep} ${styles.navMetaSecondary}`} aria-hidden="true">·</span>
-          <span className={styles.navMetaSecondary}>Memory</span>
+          <Dateline />
         </div>
         <div className={styles.navAuth}>
           <Link href="/login" className={linkClass("/login")} aria-label="Log in">Login</Link>
