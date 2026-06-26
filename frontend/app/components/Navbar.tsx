@@ -11,6 +11,25 @@ interface NavbarProps {
   variant?: "landing" | "auth" | "app";
 }
 
+/**
+ * The wordmark + strapline as a single home link (one unified hover). Used as
+ * the masthead across every navbar variant so no individual word reads as a
+ * separate, clickable nav item. `href` is the contextual home ("/" when logged
+ * out, "/profile" in-app).
+ */
+function Masthead({ href, active }: { href: string; active: boolean }) {
+  return (
+    <Link
+      href={href}
+      className={`${styles.masthead}${active ? " " + styles.mastheadActive : ""}`}
+      aria-label="Checkpoint — home"
+    >
+      <span className={styles.mastheadWord}>Checkpoint</span>
+      <span className={styles.mastheadStrap} aria-hidden="true">Games · Culture · Memory</span>
+    </Link>
+  );
+}
+
 export default function Navbar({ variant = "app" }: NavbarProps) {
   const pathname = usePathname();
   const router = useRouter();
@@ -53,14 +72,7 @@ export default function Navbar({ variant = "app" }: NavbarProps) {
   if (variant === "landing") {
     return (
       <nav className={styles.nav} aria-label="Main navigation">
-        <Link
-          href="/"
-          className={`${styles.masthead}${pathname === "/" ? " " + styles.mastheadActive : ""}`}
-          aria-label="Checkpoint — home"
-        >
-          <span className={styles.mastheadWord}>Checkpoint</span>
-          <span className={styles.mastheadStrap} aria-hidden="true">Games · Culture · Memory</span>
-        </Link>
+        <Masthead href="/" active={pathname === "/"} />
         <div className={styles.navAuth}>
           <Link href="/login" className={linkClass("/login")} aria-label="Log in">Login</Link>
           <span className={styles.navSep} aria-hidden="true">·</span>
@@ -73,11 +85,8 @@ export default function Navbar({ variant = "app" }: NavbarProps) {
   if (variant === "auth") {
     return (
       <nav className={styles.nav} aria-label="Main navigation">
-        <div className={styles.navMeta}>
-          <Link href="/" className={linkClass("/")}>Checkpoint</Link>
-          <span className={styles.navSep} aria-hidden="true">·</span>
-          <button onClick={openSearch} className={searchClass}>Search</button>
-        </div>
+        <Masthead href="/" active={pathname === "/"} />
+        <button onClick={openSearch} className={searchClass}>Search</button>
       </nav>
     );
   }
@@ -85,13 +94,7 @@ export default function Navbar({ variant = "app" }: NavbarProps) {
   return (
     <>
       <nav className={styles.nav} aria-label="Main navigation">
-        <div className={styles.navMeta}>
-          <Link href="/profile" className={linkClass("/profile")}>Checkpoint</Link>
-          <span className={`${styles.navSep} ${styles.navMetaSecondary}`} aria-hidden="true">·</span>
-          <span className={styles.navMetaSecondary}>Issue 001</span>
-          <span className={`${styles.navSep} ${styles.navMetaSecondary}`} aria-hidden="true">·</span>
-          <span className={styles.navMetaSecondary}>MMXXVI</span>
-        </div>
+        <Masthead href="/profile" active={pathname === "/profile"} />
         <div className={styles.navAuth}>
           <button onClick={openSearch} className={`${searchClass} ${styles.navAuthDesktop}`} aria-label="Search games">Search</button>
           <span className={`${styles.navSep} ${styles.navAuthSecondary}`} aria-hidden="true">·</span>

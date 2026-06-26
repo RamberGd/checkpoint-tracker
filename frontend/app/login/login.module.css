@@ -64,6 +64,43 @@
   color: var(--ink);
 }
 
+/* Masthead lockup: wordmark + strapline as one home link (matches the shared
+   Navbar), so no individual word reads as a separate clickable nav item. */
+.masthead {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.12rem;
+  line-height: 1;
+  transition: transform 200ms ease;
+}
+.masthead:hover {
+  transform: translateY(-1px);
+}
+.mastheadWord {
+  color: var(--muted);
+  transition: color 180ms ease;
+}
+.masthead:hover .mastheadWord {
+  color: var(--ink);
+}
+.mastheadStrap {
+  font-size: 0.82em;
+  letter-spacing: 0.22em;
+  color: var(--muted);
+  opacity: 0.5;
+  transition: opacity 180ms ease;
+}
+.masthead:hover .mastheadStrap {
+  opacity: 0.78;
+}
+@media (max-width: 640px) {
+  .mastheadStrap { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .masthead { transition: none; }
+  .masthead:hover { transform: none; }
+}
+
 /* ── Two-column layout ── */
 .content {
   display: grid;

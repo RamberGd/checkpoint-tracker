@@ -141,13 +141,10 @@ export default function SignupPage() {
 
         {/* Nav */}
         <nav className={styles.nav} aria-label="Main navigation">
-          <div className={styles.navMeta}>
-            <a href="/" className={styles.navLink}>Checkpoint</a>
-            <span className={styles.navSep} aria-hidden="true">·</span>
-            <span>Issue 001</span>
-            <span className={styles.navSep} aria-hidden="true">·</span>
-            <span>MMXXVI</span>
-          </div>
+          <a href="/" className={styles.masthead} aria-label="Checkpoint — home">
+            <span className={styles.mastheadWord}>Checkpoint</span>
+            <span className={styles.mastheadStrap} aria-hidden="true">Games · Culture · Memory</span>
+          </a>
           <div className={styles.navAuth}>
             <a href="/login" className={styles.navLink}>Login</a>
           </div>

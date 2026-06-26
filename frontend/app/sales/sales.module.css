@@ -51,8 +51,9 @@
 .board {
   position: absolute;
   inset: 0;
-  /* clears fixed nav: padding-block(max) × 2 + caption font × line-height */
-  padding-top: clamp(2.4rem, 3.8vw, 3.2rem);
+  /* clears fixed nav (now a two-line masthead lockup on desktop):
+     padding-block(max) × 2 + wordmark + strapline line */
+  padding-top: clamp(2.6rem, 4.5vw, 4.4rem);
   display: flex;
   flex-direction: column;
   z-index: 1;
