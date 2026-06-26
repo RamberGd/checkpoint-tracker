@@ -279,6 +279,10 @@ export default function SignupPage() {
               >
                 {btnLabel}
               </button>
+
+              <p className={styles.disclaimer}>
+                Demo only — please don&rsquo;t use a real password.
+              </p>
             </form>
 
             <p className={styles.loginPrompt}>
