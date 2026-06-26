@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useSearch } from "../contexts/search";
 import { useAuth } from "../contexts/auth";
-import Colophon from "./Colophon";
 import styles from "./Navbar.module.css";
 
 interface NavbarProps {
@@ -54,11 +53,14 @@ export default function Navbar({ variant = "app" }: NavbarProps) {
   if (variant === "landing") {
     return (
       <nav className={styles.nav} aria-label="Main navigation">
-        <div className={styles.navMeta}>
-          <Link href="/" className={linkClass("/")}>Checkpoint</Link>
-          <span className={`${styles.navSep} ${styles.navMetaSecondary}`} aria-hidden="true">·</span>
-          <Colophon />
-        </div>
+        <Link
+          href="/"
+          className={`${styles.masthead}${pathname === "/" ? " " + styles.mastheadActive : ""}`}
+          aria-label="Checkpoint — home"
+        >
+          <span className={styles.mastheadWord}>Checkpoint</span>
+          <span className={styles.mastheadStrap} aria-hidden="true">Games · Culture · Memory</span>
+        </Link>
         <div className={styles.navAuth}>
           <Link href="/login" className={linkClass("/login")} aria-label="Log in">Login</Link>
           <span className={styles.navSep} aria-hidden="true">·</span>

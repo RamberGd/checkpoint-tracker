@@ -57,6 +57,64 @@
   color: var(--accent);
 }
 
+/* ── Landing masthead lockup ──
+   The whole wordmark + strapline is ONE link to home, with a single unified
+   hover. Because it's one target, no individual word can be mistaken for a
+   separate nav item. */
+.masthead {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.12rem;
+  line-height: 1;
+  transition: transform 200ms ease;
+}
+
+.masthead:hover {
+  transform: translateY(-1px);
+}
+
+.mastheadWord {
+  /* inherits mono / uppercase / letter-spacing from the parent nav */
+  color: var(--muted);
+  transition: color 180ms ease, text-shadow 180ms ease;
+}
+
+.masthead:hover .mastheadWord {
+  color: var(--ink);
+}
+
+.mastheadActive .mastheadWord {
+  color: var(--accent);
+  text-shadow:
+    0 0 8px oklch(from var(--accent) l c h / 0.55),
+    0 0 20px oklch(from var(--accent) l c h / 0.25);
+}
+
+.mastheadActive:hover .mastheadWord {
+  color: var(--accent);
+}
+
+.mastheadStrap {
+  font-size: 0.82em;
+  letter-spacing: 0.22em;
+  color: var(--muted);
+  opacity: 0.5;
+  transition: opacity 180ms ease;
+}
+
+.masthead:hover .mastheadStrap {
+  opacity: 0.78;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .masthead {
+    transition: none;
+  }
+  .masthead:hover {
+    transform: none;
+  }
+}
+
 /* ── Mobile menu toggle ── */
 .navAuthDesktop {
   /* visible on desktop; hidden below 640px */
@@ -177,6 +235,7 @@
   .navAuthSecondary { display: none; }
   .navMetaSecondary { display: none; }
   .navAuthDesktop   { display: none; }
+  .mastheadStrap    { display: none; }
   .menuToggle       { display: block; }
 
   .menuPanel {
