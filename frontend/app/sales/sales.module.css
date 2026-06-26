@@ -182,6 +182,11 @@
 }
 
 /* ── Cell contents ── */
+/* On desktop the three meta fields are direct cells of the 5-col grid. */
+.cellMeta {
+  display: contents;
+}
+
 .cellIndex {
   font-family: var(--font-mono);
   font-size: clamp(0.8rem, 1vw, 0.95rem);
@@ -231,6 +236,84 @@
   letter-spacing: 0.02em;
   opacity: 0.75;
   line-height: 1;
+}
+
+/* ── Mobile: stacked two-line rows ──
+   The desktop 5-col table starves the 1fr Title column on narrow screens
+   (~60px → a few clipped letters). Below 640px we collapse each row into
+   title-on-its-own-line + a meta line, and let the list scroll. */
+@media (max-width: 640px) {
+  /* Hide the table header; the stacked rows are self-describing. */
+  .colRow {
+    display: none;
+  }
+
+  /* Let the deal list scroll instead of squeezing every row into one
+     fixed-height viewport (min-height:0 lets the flex child overflow). */
+  .dealList {
+    display: block;
+    grid-auto-rows: initial;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .dealList li {
+    display: block;
+  }
+
+  /* Two-line row: index gutter on the left, title over meta on the right. */
+  .dealRow {
+    grid-template-columns: 2.75rem 1fr;
+    grid-template-areas:
+      "index title"
+      "index meta";
+    row-gap: 0.4rem;
+    align-items: start;
+    padding-block: 0.95rem;
+  }
+
+  .cellIndex {
+    grid-area: index;
+    align-self: start;
+    padding-top: 0.15em;
+  }
+
+  /* Title now owns the full width — wrap (max 2 lines) instead of clipping. */
+  .cellTitle {
+    grid-area: title;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    white-space: normal;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    padding-right: 0;
+    line-height: 1.04;
+  }
+
+  /* store · −disc% · $price on one baseline-aligned line. */
+  .cellMeta {
+    grid-area: meta;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.4rem;
+  }
+  .cellStore,
+  .cellDiscount,
+  .cellPrice {
+    font-size: 1.05rem;
+    text-align: left;
+    line-height: 1.2;
+  }
+  /* Dot separators between the meta fields. */
+  .cellDiscount::before,
+  .cellPrice::before {
+    content: "·";
+    margin-right: 0.4rem;
+    color: var(--muted);
+    opacity: 0.5;
+  }
 }
 
 /* ── Keyframes ── */

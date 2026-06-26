@@ -95,10 +95,15 @@ export default function SalesPage() {
                   {String(i + 1).padStart(3, "0")}
                 </span>
                 <span className={styles.cellTitle}>{deal.title}</span>
-                <span className={styles.cellStore}>{deal.store}</span>
-                <span className={styles.cellDiscount}>−{deal.discount}%</span>
-                <span className={styles.cellPrice}>
-                  ${deal.salePrice.toFixed(2)}
+                {/* display:contents on desktop keeps these three as direct grid
+                    cells of the 5-col table; on mobile cellMeta becomes a flex
+                    row so store · discount · price read as one line. */}
+                <span className={styles.cellMeta}>
+                  <span className={styles.cellStore}>{deal.store}</span>
+                  <span className={styles.cellDiscount}>−{deal.discount}%</span>
+                  <span className={styles.cellPrice}>
+                    ${deal.salePrice.toFixed(2)}
+                  </span>
                 </span>
               </a>
             </li>
