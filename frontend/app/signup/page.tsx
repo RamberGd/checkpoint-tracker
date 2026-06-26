@@ -271,18 +271,20 @@ export default function SignupPage() {
 
               {formErr && <p className={styles.formErrorMsg} role="alert">{formErr}</p>}
 
-              <button
-                type="submit"
-                className={`${styles.submitBtn}${phase === "success" ? " " + styles.submitBtnSuccess : ""}`}
-                disabled={disabled}
-                aria-live="polite"
-              >
-                {btnLabel}
-              </button>
+              <div className={styles.submitGroup}>
+                <button
+                  type="submit"
+                  className={`${styles.submitBtn}${phase === "success" ? " " + styles.submitBtnSuccess : ""}`}
+                  disabled={disabled}
+                  aria-live="polite"
+                >
+                  {btnLabel}
+                </button>
 
-              <p className={styles.disclaimer}>
-                Demo only — please don&rsquo;t use a real password.
-              </p>
+                <p className={styles.disclaimer}>
+                  Demo only — please don&rsquo;t use a real password.
+                </p>
+              </div>
             </form>
 
             <p className={styles.loginPrompt}>
