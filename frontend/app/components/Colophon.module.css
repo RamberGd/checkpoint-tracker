@@ -1,0 +1,49 @@
+/* ── Diegetic print colophon ──
+   A faux publication stamp. The barcode + ISSN codes anchor the whole strip as
+   a printed artifact, so the subject tags can't be mistaken for nav links. */
+.colophon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  white-space: nowrap;
+}
+
+/* Hidden on mobile, matching the navbar's secondary-item breakpoint. */
+@media (max-width: 640px) {
+  .colophon {
+    display: none;
+  }
+}
+
+/* CSS barcode: irregular bar widths tiling every 14px reads as a real code. */
+.barcode {
+  width: 2.9em;
+  height: 1.05em;
+  flex-shrink: 0;
+  opacity: 0.55;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--ink) 0 1px, transparent 1px 3px,
+    var(--ink) 3px 4px, transparent 4px 7px,
+    var(--ink) 7px 9px, transparent 9px 10px,
+    var(--ink) 10px 11px, transparent 11px 14px
+  );
+}
+
+.code {
+  /* inherits mono / uppercase / letter-spacing from the parent nav */
+  color: var(--muted);
+}
+
+.sep {
+  opacity: 0.35;
+  user-select: none;
+}
+
+/* Subject tags: dimmer and wider-tracked so they read as a classification line
+   on the stamp rather than a row of links. */
+.subjects {
+  color: var(--muted);
+  letter-spacing: 0.2em;
+  opacity: 0.6;
+}
