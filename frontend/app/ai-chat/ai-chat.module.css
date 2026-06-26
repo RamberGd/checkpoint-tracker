@@ -276,7 +276,10 @@
   outline: none;
   color: var(--ink);
   font-family: var(--font-body);
-  font-size: var(--type-body);
+  /* Floor at 16px: iOS Safari auto-zooms (and never unzooms) any focused
+     field whose computed font-size is < 16px. With html{font-size:85%},
+     var(--type-body) resolves below 16px on phones, triggering the zoom. */
+  font-size: max(16px, var(--type-body));
   line-height: 1.5;
   resize: none;
   caret-color: var(--accent);

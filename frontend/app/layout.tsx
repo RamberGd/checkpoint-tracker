@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Barlow_Condensed, Spectral, Share_Tech_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "./contexts/auth";
@@ -34,6 +34,15 @@ export const metadata: Metadata = {
   title: "CheckPoint — A journal for your games",
   description:
     "Track the played, the abandoned, the returned to. CheckPoint is a personal record of every game that mattered.",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  // Shrink the layout viewport when the virtual keyboard opens so 100dvh and
+  // fixed bottom: 0 elements (e.g. the AI chat input bar) stay above it
+  // instead of being overlapped by the keyboard.
+  interactiveWidget: "resizes-content",
 };
 
 export default function RootLayout({
