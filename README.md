@@ -5,7 +5,7 @@
 <!-- Add a screenshot or demo GIF here once deployed -->
 <!-- ![CheckPoint screenshot](docs/screenshot.png) -->
 
-**[Live Demo](https://www.checkpointgames.tech/login)** · **[Report a Bug](../../issues)**
+**[Live Demo](https://www.checkpointgames.tech)** · **[Report a Bug](../../issues)**
 
 ---
 
