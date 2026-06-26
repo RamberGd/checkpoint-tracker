@@ -320,17 +320,32 @@ export default function AiChatPage() {
           <span className={styles.slateReturn} aria-hidden="true">↵</span>
         </div>
         <div className={styles.slateRule} aria-hidden="true" />
-        <textarea
-          ref={textareaRef}
-          className={styles.slateInput}
-          placeholder={isLive ? "Ask anything about games..." : "← back to present"}
-          value={inputValue}
-          onChange={handleInputChange}
-          onKeyDown={handleKeyDown}
-          disabled={isInputDisabled}
-          rows={1}
-          aria-label="Your question"
-        />
+        <div className={styles.slateInputRow}>
+          <textarea
+            ref={textareaRef}
+            className={styles.slateInput}
+            placeholder={isLive ? "Ask anything about games..." : "← back to present"}
+            value={inputValue}
+            onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
+            disabled={isInputDisabled}
+            rows={1}
+            aria-label="Your question"
+          />
+          {/* Mobile-only tappable send (desktop submits via Enter; button is
+              display:none above 640px). preventDefault on pointerdown keeps the
+              keyboard open instead of blurring the textarea. */}
+          <button
+            type="button"
+            className={styles.sendBtn}
+            onPointerDown={(e) => e.preventDefault()}
+            onClick={handleSubmit}
+            disabled={isInputDisabled || !inputValue.trim()}
+            aria-label="Send message"
+          >
+            ↵
+          </button>
+        </div>
       </div>
     </div>
     </RequireAuth>

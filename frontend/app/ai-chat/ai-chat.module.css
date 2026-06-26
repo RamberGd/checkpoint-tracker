@@ -268,6 +268,11 @@
   opacity: 0.5;
   margin-bottom: 0.6rem;
 }
+.slateInputRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
 .slateInput {
   display: block;
   width: 100%;
@@ -291,6 +296,38 @@
 .slateInput:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+/* Send button — hidden on desktop (Enter submits); shown on mobile. */
+.sendBtn {
+  display: none;
+}
+@media (max-width: 640px) {
+  .sendBtn {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border: 1px solid var(--accent);
+    border-radius: 2px;
+    background: transparent;
+    color: var(--accent);
+    font-size: 1.35rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 160ms ease, color 160ms ease, opacity 160ms ease;
+  }
+  .sendBtn:active {
+    background: var(--accent);
+    color: var(--bg);
+  }
+  .sendBtn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
 }
 
 /* ── Label row (label + frame counter) ── */
