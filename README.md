@@ -5,7 +5,7 @@
 <!-- Add a screenshot or demo GIF here once deployed -->
 <!-- ![CheckPoint screenshot](docs/screenshot.png) -->
 
-**[Live Demo](#)** · **[Report a Bug](../../issues)**
+**[Live Demo](www.checkpointgames.tech)** · **[Report a Bug](../../issues)**
 
 ---
 
@@ -163,9 +163,9 @@ This project was built as part of a university course.
 | Name               | Contribution                                                                                                           |
 |--------------------|------------------------------------------------------------------------------------------------------------------------|
 | **M. Ter-Avakian** | Frontend, design system, IGDB game data fetching and caching, SQLAlchemy models, profile management, tests             |
-| **B.**             | User authentication, game lists (played/wishlist/favourites), reviews and replies, SQLAlchemy models, tests            |
-| **V.**             | IDGB API search, chatbot via Ollama API with search integration via Exa API, tests                                     |
-| **R.**             | Sales page with deals sourced from ITAD API, ITAD price fetching, game title matching between IGDB and ITAD, tests |
+| **B. Tanurcov**             | User authentication, game lists (played/wishlist/favourites), reviews and replies, SQLAlchemy models, tests            |
+| **V. M.**             | IDGB API search, chatbot via Ollama API with search integration via Exa API, tests                                     |
+| **C. Chandrahas**             | Sales page with deals sourced from ITAD API, ITAD price fetching, game title matching between IGDB and ITAD, tests |
 
 ---
 
